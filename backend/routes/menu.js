@@ -15,9 +15,8 @@ router.get('/categories', async (req, res) => {
   try {
     const pool = req.app.locals.db;
     const query = `
-      SELECT id, name, description, display_order, is_active, created_at, updated_at
+      SELECT id, name, description, display_order, created_at, updated_at
       FROM menu_categories 
-      WHERE is_active = true 
       ORDER BY display_order ASC, name ASC
     `;
     const result = await pool.query(query);
@@ -40,11 +39,11 @@ router.get('/items', async (req, res) => {
     let query = `
       SELECT 
         mi.id, mi.name, mi.description, mi.price, mi.image_url, 
-        mi.is_available, mi.is_featured, mi.label, mi.allergens, mi.dietary_info,
+        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info,
         mc.name as category_name, mc.id as category_id
       FROM menu_items mi
       LEFT JOIN menu_categories mc ON mi.category_id = mc.id
-      WHERE mi.is_active = true
+      WHERE mi.is_available = true
     `;
     
     const queryParams = [];
@@ -95,11 +94,11 @@ router.get('/featured', async (req, res) => {
     const query = `
       SELECT 
         mi.id, mi.name, mi.description, mi.price, mi.image_url, 
-        mi.is_available, mi.label, mi.allergens, mi.dietary_info,
+        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info,
         mc.name as category_name
       FROM menu_items mi
       LEFT JOIN menu_categories mc ON mi.category_id = mc.id
-      WHERE mi.is_active = true AND mi.is_featured = true AND mi.is_available = true
+      WHERE mi.is_featured = true AND mi.is_available = true
       ORDER BY mi.created_at DESC
       LIMIT 6
     `;
@@ -124,12 +123,12 @@ router.get('/items/:id', async (req, res) => {
     const query = `
       SELECT 
         mi.id, mi.name, mi.description, mi.price, mi.image_url, 
-        mi.is_available, mi.is_featured, mi.label, mi.allergens, mi.dietary_info,
-        mi.preparation_time, mi.calories, mi.created_at, mi.updated_at,
+        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info,
+        mi.preparation_time, mi.created_at, mi.updated_at,
         mc.name as category_name, mc.id as category_id
       FROM menu_items mi
       LEFT JOIN menu_categories mc ON mi.category_id = mc.id
-      WHERE mi.id = $1 AND mi.is_active = true
+      WHERE mi.id = $1 AND mi.is_available = true
     `;
     
     const result = await pool.query(query, [id]);
