@@ -168,25 +168,12 @@ app.get('/api/db-test', async (req, res) => {
   }
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'production' ? {} : err.stack
-  });
-});
-
 // Serve static files from React app in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/build')));
   
   // Handle React routing, return all non-API requests to React app
   app.get('*', (req, res) => {
-    // Don't serve React app for API routes
-    if (req.path.startsWith('/api/')) {
-      return res.status(404).json({ message: 'API route not found' });
-    }
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
   });
 } else {
@@ -195,6 +182,15 @@ if (process.env.NODE_ENV === 'production') {
     res.status(404).json({ message: 'Route not found' });
   });
 }
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'production' ? {} : err.stack
+  });
+});
 
 // Start server
 app.listen(PORT, () => {
