@@ -179,16 +179,15 @@ app.get('/api/db-test', async (req, res) => {
   }
 });
 
-// Serve static files from React app (after API routes)
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-// Handle React routing - catch all non-API and non-test requests
+// Backend-only deployment - no static file serving
+// All non-API routes return 404
 app.get('*', (req, res) => {
-  // Don't serve React app for API routes or test routes
-  if (req.path.startsWith('/api/') || req.path.startsWith('/test')) {
-    return res.status(404).json({ error: 'Route not found' });
+  // Only serve API routes and test routes
+  if (!req.path.startsWith('/api/') && !req.path.startsWith('/test')) {
+    return res.status(404).json({ error: 'Route not found - this is a backend API only' });
   }
-  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+  // This shouldn't be reached due to API routes being handled above
+  res.status(404).json({ error: 'Route not found' });
 });
 
 // Error handling middleware
