@@ -47,8 +47,8 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "img-src": ["'self'", "http://localhost:5000", "http://localhost:3000", "data:", "https:"],
-      "connect-src": ["'self'", "http://localhost:5000", "http://localhost:3000", "https:"],
+      "img-src": ["'self'", "http://localhost:5000", "http://localhost:3000", "https://bella-vista-restaurant.onrender.com", "https://bella-vista-restaurant-1.onrender.com", "data:", "https:"],
+      "connect-src": ["'self'", "http://localhost:5000", "http://localhost:3000", "https://bella-vista-restaurant.onrender.com", "https://bella-vista-restaurant-1.onrender.com", "https:"],
     },
   },
   crossOriginResourcePolicy: { policy: "cross-origin" }
