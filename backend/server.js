@@ -45,6 +45,12 @@ pool.connect((err, client, release) => {
 // Make pool available to routes
 app.locals.db = pool;
 
+// Debug middleware - log all requests
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
 // Middleware
 // Dynamic CSP configuration based on environment
 const allowedOrigins = [
