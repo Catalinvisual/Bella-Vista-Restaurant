@@ -132,7 +132,7 @@ require('./config/passport')(passport, pool);
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes
+// API Routes - MUST come before static file serving
 app.use('/api/auth', authRoutes);
 app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
@@ -168,10 +168,10 @@ app.get('/api/db-test', async (req, res) => {
   }
 });
 
-// Serve static files from React app
+// Serve static files from React app (after API routes)
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-// Handle React routing, return all requests to React app
+// Handle React routing - catch all non-API requests
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
