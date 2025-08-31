@@ -138,6 +138,11 @@ require('./config/passport')(passport, pool);
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Simple test route at root level
+app.get('/test', (req, res) => {
+  res.json({ message: 'Server is working', timestamp: new Date().toISOString() });
+});
+
 // API Routes - MUST come before static file serving
 app.use('/api/auth', authRoutes);
 app.use('/api/menu', menuRoutes);
