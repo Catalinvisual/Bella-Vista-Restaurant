@@ -67,15 +67,25 @@ REACT_APP_GOOGLE_CLIENT_ID=1023213204153-hjb7g9k8f40fbftmi237cugepq3r1prh.apps.g
 REACT_APP_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key_here
 ```
 
+## Important Security Note
+
+**GitHub Push Protection**: Due to GitHub's security scanning, you cannot push files containing actual API keys or secrets to the repository. The `.env.production` file has been replaced with `.env.production.template` to avoid this issue.
+
 ## Deployment Steps
 
-### 1. Commit and Push Changes
+### 1. Deploy Without Sensitive Data
+
+The repository now contains template files instead of actual production environment files. You'll set the actual values directly in Render's environment variables dashboard.
 
 ```bash
 git add .
 git commit -m "Fix CORS and environment configuration for Render deployment"
 git push origin main
 ```
+
+**Note**: If GitHub still blocks the push due to secrets in git history, you can either:
+- Use the GitHub web interface to allow the secret (follow the provided URL)
+- Or deploy directly from your local repository to Render without pushing to GitHub
 
 ### 2. Deploy Backend Service
 
