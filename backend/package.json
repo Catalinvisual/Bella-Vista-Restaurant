@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Bella Vista Restaurant Backend API",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
