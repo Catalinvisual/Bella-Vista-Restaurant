@@ -4,12 +4,24 @@ const { sendOrderConfirmation } = require('../services/emailService');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_51234567890abcdef');
 
-// Middleware to check if user is authenticated
+// Middleware to check if user is authenticated via JWT
 const isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Authentication required' });
   }
-  res.status(401).json({ message: 'Authentication required' });
+  
+  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+  
+  try {
+    const jwt = require('jsonwebtoken');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = { id: decoded.userId, email: decoded.email, role: decoded.role };
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid or expired token' });
+  }
 };
 
 // Create payment intent

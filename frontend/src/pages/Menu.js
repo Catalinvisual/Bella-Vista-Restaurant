@@ -19,9 +19,10 @@ import ProductCard from '../components/ProductCard';
 import axios from 'axios';
 import apiCache from '../utils/apiCache';
 import performanceMonitor, { usePerformanceMonitor } from '../utils/performanceMonitor';
+import { getApiUrl } from '../utils/api';
 
 // Configure axios
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+axios.defaults.baseURL = getApiUrl();
 axios.defaults.withCredentials = true;
 
 const Menu = () => {

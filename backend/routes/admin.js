@@ -4,10 +4,25 @@ const router = express.Router();
 
 // Middleware to check if user is admin
 const isAdmin = (req, res, next) => {
-  if (req.isAuthenticated() && req.user.role === 'admin') {
-    return next();
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(403).json({ message: 'Admin access required' });
   }
-  res.status(403).json({ message: 'Admin access required' });
+  
+  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+  
+  try {
+    const jwt = require('jsonwebtoken');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.role !== 'admin') {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+    req.user = { id: decoded.userId, email: decoded.email, role: decoded.role };
+    next();
+  } catch (error) {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
 };
 
 // Dashboard statistics (detailed)

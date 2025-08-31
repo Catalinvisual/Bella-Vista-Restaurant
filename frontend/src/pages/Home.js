@@ -23,9 +23,10 @@ import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ProductCard';
 import AnimatedSection from '../components/AnimatedSection';
 import axios from 'axios';
+import { getApiUrl } from '../utils/api';
 
 // Configure axios
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+axios.defaults.baseURL = getApiUrl();
 axios.defaults.withCredentials = true;
 
 const Home = () => {
