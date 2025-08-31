@@ -30,6 +30,48 @@ router.get('/categories', async (req, res) => {
   }
 });
 
+// Get complete menu data (categories with items)
+router.get('/', async (req, res) => {
+  try {
+    const pool = req.app.locals.db;
+    
+    // Get categories
+    const categoriesQuery = `
+      SELECT id, name, description, display_order, created_at, updated_at
+      FROM menu_categories 
+      ORDER BY display_order ASC, name ASC
+    `;
+    const categoriesResult = await pool.query(categoriesQuery);
+    
+    // Get all menu items
+    const itemsQuery = `
+      SELECT 
+        mi.id, mi.name, mi.description, mi.price, mi.image_url, 
+        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info,
+        mc.name as category_name, mc.id as category_id
+      FROM menu_items mi
+      LEFT JOIN menu_categories mc ON mi.category_id = mc.id
+      WHERE mi.is_available = true
+      ORDER BY mc.display_order ASC, mi.name ASC
+    `;
+    const itemsResult = await pool.query(itemsQuery);
+    
+    // Group items by category
+    const categoriesWithItems = categoriesResult.rows.map(category => ({
+      ...category,
+      items: itemsResult.rows.filter(item => item.category_id === category.id)
+    }));
+    
+    res.json({
+      categories: categoriesWithItems,
+      totalItems: itemsResult.rows.length
+    });
+  } catch (error) {
+    console.error('Error fetching complete menu:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Get all menu items
 router.get('/items', async (req, res) => {
   try {
