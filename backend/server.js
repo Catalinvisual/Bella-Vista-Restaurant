@@ -147,6 +147,24 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Database test endpoint
+app.get('/api/db-test', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW() as current_time, COUNT(*) as category_count FROM menu_categories');
+    res.json({ 
+      status: 'Database connection successful',
+      current_time: result.rows[0].current_time,
+      category_count: result.rows[0].category_count
+    });
+  } catch (error) {
+    console.error('Database test error:', error);
+    res.status(500).json({ 
+      status: 'Database connection failed',
+      error: error.message
+    });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
