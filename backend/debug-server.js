@@ -37,19 +37,15 @@ app.get('/api/debug/db-test', async (req, res) => {
   try {
     const { Pool } = require('pg');
     
-    const pool = new Pool(
-      process.env.DATABASE_URL ? 
-        { connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 5000 } :
-        {
-          user: process.env.DB_USER,
-          host: process.env.DB_HOST,
-          database: process.env.DB_NAME,
-          password: process.env.DB_PASSWORD,
-          port: process.env.DB_PORT,
-          ssl: { rejectUnauthorized: false },
-          connectionTimeoutMillis: 5000
-        }
-    );
+    const pool = new Pool({
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT,
+      ssl: { rejectUnauthorized: false },
+      connectionTimeoutMillis: 5000
+    });
     
     const client = await pool.connect();
     const result = await client.query('SELECT NOW()');
@@ -76,18 +72,14 @@ app.get('/api/debug/tables', async (req, res) => {
   try {
     const { Pool } = require('pg');
     
-    const pool = new Pool(
-      process.env.DATABASE_URL ? 
-        { connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } } :
-        {
-          user: process.env.DB_USER,
-          host: process.env.DB_HOST,
-          database: process.env.DB_NAME,
-          password: process.env.DB_PASSWORD,
-          port: process.env.DB_PORT,
-          ssl: { rejectUnauthorized: false }
-        }
-    );
+    const pool = new Pool({
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT,
+      ssl: { rejectUnauthorized: false }
+    });
     
     const client = await pool.connect();
     const result = await client.query(`
@@ -116,18 +108,14 @@ app.post('/api/debug/setup-complete-db', async (req, res) => {
   try {
     const { Pool } = require('pg');
     
-    const pool = new Pool(
-      process.env.DATABASE_URL ? 
-        { connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } } :
-        {
-          user: process.env.DB_USER,
-          host: process.env.DB_HOST,
-          database: process.env.DB_NAME,
-          password: process.env.DB_PASSWORD,
-          port: process.env.DB_PORT,
-          ssl: { rejectUnauthorized: false }
-        }
-    );
+    const pool = new Pool({
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT,
+      ssl: { rejectUnauthorized: false }
+    });
     
     const client = await pool.connect();
     
@@ -262,18 +250,14 @@ app.post('/api/debug/setup-db', async (req, res) => {
   try {
     const { Pool } = require('pg');
     
-    const pool = new Pool(
-      process.env.DATABASE_URL ? 
-        { connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } } :
-        {
-          user: process.env.DB_USER,
-          host: process.env.DB_HOST,
-          database: process.env.DB_NAME,
-          password: process.env.DB_PASSWORD,
-          port: process.env.DB_PORT,
-          ssl: { rejectUnauthorized: false }
-        }
-    );
+    const pool = new Pool({
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT,
+      ssl: { rejectUnauthorized: false }
+    });
     
     const client = await pool.connect();
     

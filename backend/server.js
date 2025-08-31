@@ -22,18 +22,15 @@ const reservationRoutes = require('./routes/reservations');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Database connection
-const pool = new Pool(
-  process.env.DATABASE_URL ? 
-    { connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } } :
-    {
-      user: process.env.DB_USER || 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      database: process.env.DB_NAME || 'bella_db',
-      password: process.env.DB_PASSWORD || 'password',
-      port: process.env.DB_PORT || 5432,
-    }
-);
+// Database connection - prioritize individual parameters over DATABASE_URL
+const pool = new Pool({
+  user: process.env.DB_USER || 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  database: process.env.DB_NAME || 'bella_db',
+  password: process.env.DB_PASSWORD || 'password',
+  port: process.env.DB_PORT || 5432,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 // Test database connection
 pool.connect((err, client, release) => {
