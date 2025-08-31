@@ -6,7 +6,9 @@ const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const passport = require('passport');
 const { Pool } = require('pg');
-require('dotenv').config();
+// Load environment variables based on NODE_ENV
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+require('dotenv').config({ path: envFile });
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -21,13 +23,17 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Database connection
-const pool = new Pool({
-  user: process.env.DB_USER || 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'bella_db',
-  password: process.env.DB_PASSWORD || 'password',
-  port: process.env.DB_PORT || 5432,
-});
+const pool = new Pool(
+  process.env.DATABASE_URL ? 
+    { connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } } :
+    {
+      user: process.env.DB_USER || 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      database: process.env.DB_NAME || 'bella_db',
+      password: process.env.DB_PASSWORD || 'password',
+      port: process.env.DB_PORT || 5432,
+    }
+);
 
 // Test database connection
 pool.connect((err, client, release) => {
