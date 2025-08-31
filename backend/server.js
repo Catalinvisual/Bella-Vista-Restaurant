@@ -199,6 +199,7 @@ if (process.env.NODE_ENV === 'production') {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Database URL configured: ${process.env.DATABASE_URL ? 'Yes' : 'No'}`);
 });
 
 module.exports = app;
