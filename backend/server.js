@@ -50,6 +50,7 @@ const allowedOrigins = [
   "http://localhost:5000",
   "https://bella-vista-restaurant.onrender.com",
   "https://bella-vista-restaurant-1.onrender.com",
+  "https://bella-vista-backend.onrender.com",
   "data:",
   "https:"
 ];
@@ -70,7 +71,9 @@ app.use(morgan('combined'));
 // Dynamic CORS configuration
 const corsOrigins = [
   'http://localhost:3000',
-  'https://bella-vista-restaurant-1.onrender.com'
+  'https://bella-vista-restaurant-1.onrender.com',
+  'https://bella-vista-restaurant.onrender.com',
+  'https://bella-vista-backend.onrender.com'
 ];
 
 app.use(cors({
