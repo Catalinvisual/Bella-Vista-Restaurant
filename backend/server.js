@@ -181,8 +181,12 @@ app.use((err, req, res, next) => {
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/build')));
   
-  // Handle React routing, return all requests to React app
+  // Handle React routing, return all non-API requests to React app
   app.get('*', (req, res) => {
+    // Don't serve React app for API routes
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ message: 'API route not found' });
+    }
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
   });
 } else {
