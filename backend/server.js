@@ -43,22 +43,50 @@ pool.connect((err, client, release) => {
 app.locals.db = pool;
 
 // Middleware
+// Dynamic CSP configuration based on environment
+const allowedOrigins = [
+  "'self'",
+  "http://localhost:3000",
+  "http://localhost:5000",
+  "https://bella-vista-restaurant.onrender.com",
+  "https://bella-vista-restaurant-1.onrender.com",
+  "data:",
+  "https:"
+];
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "img-src": ["'self'", "http://localhost:5000", "http://localhost:3000", "https://bella-vista-restaurant.onrender.com", "https://bella-vista-restaurant-1.onrender.com", "data:", "https:"],
-      "connect-src": ["'self'", "http://localhost:5000", "http://localhost:3000", "https://bella-vista-restaurant.onrender.com", "https://bella-vista-restaurant-1.onrender.com", "https:"],
+      "img-src": allowedOrigins,
+      "connect-src": allowedOrigins,
+      "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:"],
+      "style-src": ["'self'", "'unsafe-inline'", "https:"],
     },
   },
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(morgan('combined'));
+// Dynamic CORS configuration
+const corsOrigins = [
+  'http://localhost:3000',
+  'https://bella-vista-restaurant-1.onrender.com'
+];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
-    : 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (corsOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
