@@ -127,17 +127,20 @@ router.post('/', isAuthenticated, [
         user_id, total_amount, tax_amount, delivery_fee, final_total,
         order_type, status, delivery_address, phone_number, special_instructions,
         customer_email, customer_name, customer_phone, pickup_time,
-        created_at, updated_at
+        payment_method, payment_status, created_at, updated_at
       )
-      VALUES ($1, $2, $3, $4, $5, $6, 'pending', $7, $8, $9, $10, $11, $12, $13, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      VALUES ($1, $2, $3, $4, $5, $6, 'pending', $7, $8, $9, $10, $11, $12, $13, $14, $15, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       RETURNING *
     `;
+
+    const { payment_method = 'cash_on_delivery' } = req.body;
+    const payment_status = payment_method === 'cash_on_delivery' ? 'pending' : 'paid';
 
     const orderResult = await client.query(orderQuery, [
       user_id, total_amount, tax_amount, delivery_fee, final_total,
       order_type, delivery_address, phone_number, special_instructions,
       customer_info?.email || null, customer_info?.full_name || null, customer_info?.phone || null,
-      pickup_time || null
+      pickup_time || null, payment_method, payment_status
     ]);
 
     const order = orderResult.rows[0];
@@ -414,6 +417,57 @@ router.patch('/:id/status', isAdmin, [
     });
   } catch (error) {
     console.error('Error updating order status:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Complete cash payment (Admin only)
+router.patch('/:id/complete-cash-payment', isAdmin, async (req, res) => {
+  try {
+    const pool = req.app.locals.db;
+    const { id } = req.params;
+
+    // First check if order exists and is a cash payment
+    const checkQuery = `
+      SELECT id, payment_method, payment_status, status 
+      FROM orders 
+      WHERE id = $1
+    `;
+    
+    const checkResult = await pool.query(checkQuery, [id]);
+    
+    if (checkResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    
+    const order = checkResult.rows[0];
+    
+    if (order.payment_method !== 'cash_on_delivery') {
+      return res.status(400).json({ message: 'This order is not a cash payment order' });
+    }
+    
+    if (order.payment_status === 'paid') {
+      return res.status(400).json({ message: 'Payment has already been completed' });
+    }
+
+    // Update payment status to paid and order status to confirmed if still pending
+    const updateQuery = `
+      UPDATE orders 
+      SET payment_status = 'paid', 
+          status = CASE WHEN status = 'pending' THEN 'confirmed' ELSE status END,
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = $1
+      RETURNING *
+    `;
+
+    const result = await pool.query(updateQuery, [id]);
+
+    res.json({
+      message: 'Cash payment completed successfully',
+      order: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error completing cash payment:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
