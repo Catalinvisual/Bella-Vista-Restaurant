@@ -51,6 +51,11 @@ const allowedOrigins = [
   "https://bella-vista-restaurant.onrender.com",
   "https://bella-vista-restaurant-1.onrender.com",
   "https://bella-vista-backend.onrender.com",
+  "https://www.google.com",
+  "https://accounts.google.com",
+  "https://js.stripe.com",
+  "https://checkout.stripe.com",
+  "https://api.stripe.com",
   "data:",
   "https:"
 ];
@@ -59,10 +64,13 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "default-src": ["'self'"],
       "img-src": allowedOrigins,
       "connect-src": allowedOrigins,
-      "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:"],
+      "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:", "https://js.stripe.com"],
       "style-src": ["'self'", "'unsafe-inline'", "https:"],
+      "frame-src": ["'self'", "https://www.google.com", "https://accounts.google.com", "https://js.stripe.com", "https://checkout.stripe.com"],
+      "font-src": ["'self'", "https:", "data:"],
     },
   },
   crossOriginResourcePolicy: { policy: "cross-origin" }
