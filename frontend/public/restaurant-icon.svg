@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Restaurant building -->
+  <rect x="20" y="40" width="60" height="45" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+  
+  <!-- Roof -->
+  <polygon points="15,40 50,20 85,40" fill="#CD853F" stroke="#8B4513" stroke-width="2"/>
+  
+  <!-- Door -->
+  <rect x="45" y="65" width="10" height="20" fill="#654321"/>
+  <circle cx="53" cy="75" r="1" fill="#FFD700"/>
+  
+  <!-- Windows -->
+  <rect x="30" y="50" width="8" height="8" fill="#87CEEB" stroke="#4682B4" stroke-width="1"/>
+  <rect x="62" y="50" width="8" height="8" fill="#87CEEB" stroke="#4682B4" stroke-width="1"/>
+  
+  <!-- Window frames -->
+  <line x1="34" y1="50" x2="34" y2="58" stroke="#4682B4" stroke-width="0.5"/>
+  <line x1="30" y1="54" x2="38" y2="54" stroke="#4682B4" stroke-width="0.5"/>
+  <line x1="66" y1="50" x2="66" y2="58" stroke="#4682B4" stroke-width="0.5"/>
+  <line x1="62" y1="54" x2="70" y2="54" stroke="#4682B4" stroke-width="0.5"/>
+  
+  <!-- Sign -->
+  <rect x="35" y="30" width="30" height="8" fill="#F5DEB3" stroke="#8B4513" stroke-width="1"/>
+  <text x="50" y="36" text-anchor="middle" font-family="serif" font-size="6" fill="#8B4513">RESTAURANT</text>
+  
+  <!-- Chimney -->
+  <rect x="65" y="25" width="6" height="15" fill="#8B4513" stroke="#654321" stroke-width="1"/>
+  
+  <!-- Smoke -->
+  <circle cx="68" cy="22" r="2" fill="#D3D3D3" opacity="0.7"/>
+  <circle cx="70" cy="18" r="1.5" fill="#D3D3D3" opacity="0.6"/>
+  <circle cx="66" cy="15" r="1" fill="#D3D3D3" opacity="0.5"/>
+  
+  <!-- Chef hat decoration -->
+  <ellipse cx="50" cy="12" rx="8" ry="4" fill="white" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="46" y="8" width="8" height="8" fill="white" stroke="#E0E0E0" stroke-width="1" rx="1"/>
+  <circle cx="48" cy="10" r="0.5" fill="#E0E0E0"/>
+  <circle cx="52" cy="10" r="0.5" fill="#E0E0E0"/>
+</svg>

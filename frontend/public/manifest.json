@@ -1,0 +1,25 @@
+{
+  "short_name": "Bela Vista",
+  "name": "Bela Vista Restaurant",
+  "icons": [
+    {
+      "src": "restaurant-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "restaurant-icon-192.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192"
+    },
+    {
+      "src": "restaurant-icon-512.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
