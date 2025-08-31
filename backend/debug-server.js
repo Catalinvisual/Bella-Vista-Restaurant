@@ -67,6 +67,44 @@ app.get('/api/debug/db-test', async (req, res) => {
   }
 });
 
+// Check existing tables
+app.get('/api/debug/tables', async (req, res) => {
+  try {
+    const { Pool } = require('pg');
+    
+    const pool = new Pool({
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT,
+      ssl: {
+        rejectUnauthorized: false
+      }
+    });
+    
+    const client = await pool.connect();
+    const result = await client.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public'
+      ORDER BY table_name;
+    `);
+    client.release();
+    await pool.end();
+    
+    res.json({ 
+      tables: result.rows.map(row => row.table_name)
+    });
+  } catch (error) {
+    console.error('Error fetching tables:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch tables',
+      details: error.message
+    });
+  }
+});
+
 // Setup database schema endpoint
 app.post('/api/debug/setup-db', async (req, res) => {
   try {
