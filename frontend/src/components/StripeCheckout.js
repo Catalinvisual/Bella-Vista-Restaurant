@@ -41,9 +41,9 @@ axios.interceptors.request.use(
 // Load Stripe (use your publishable key)
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdef');
 
-const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, onSuccess, onError, clientSecret }) => {
-  const stripe = useStripe();
-  const elements = useElements();
+const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, onSuccess, onError, clientSecret, testMode = false }) => {
+  const stripe = testMode ? null : useStripe();
+  const elements = testMode ? null : useElements();
   const theme = useTheme();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -51,15 +51,17 @@ const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, o
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!stripe || !elements) {
+    if (!testMode && (!stripe || !elements)) {
       return;
     }
 
-    // Check if Payment Element is mounted and ready
-    const paymentElement = elements.getElement('payment');
-    if (!paymentElement) {
-      setError('Payment form is not ready. Please wait a moment and try again.');
-      return;
+    // Check if Payment Element is mounted and ready (skip for test mode)
+    if (!testMode) {
+      const paymentElement = elements.getElement('payment');
+      if (!paymentElement) {
+        setError('Payment form is not ready. Please wait a moment and try again.');
+        return;
+      }
     }
 
     setLoading(true);
@@ -195,23 +197,34 @@ const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, o
       )}
       
       <form onSubmit={handleSubmit}>
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="body2" sx={{ mb: 1, fontWeight: 'bold' }}>
-            Payment Information
-          </Typography>
-          <Box 
-            sx={{ 
-              border: `1px solid ${theme.palette.divider}`, 
-              borderRadius: 1,
-              '&:focus-within': {
-                borderColor: theme.palette.primary.main,
-                borderWidth: 2
-              }
-            }}
-          >
-            <PaymentElement options={paymentElementOptions} />
+        {testMode ? (
+          <Box sx={{ p: 3, border: '2px dashed #ccc', borderRadius: 2, textAlign: 'center', mb: 2 }}>
+            <Typography variant="h6" color="primary" gutterBottom>
+              🧪 Test Mode Payment
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              This is a test payment. No real payment will be processed.
+            </Typography>
           </Box>
-        </Box>
+        ) : (
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="body2" sx={{ mb: 1, fontWeight: 'bold' }}>
+              Payment Information
+            </Typography>
+            <Box 
+              sx={{ 
+                border: `1px solid ${theme.palette.divider}`, 
+                borderRadius: 1,
+                '&:focus-within': {
+                  borderColor: theme.palette.primary.main,
+                  borderWidth: 2
+                }
+              }}
+            >
+              <PaymentElement options={paymentElementOptions} />
+            </Box>
+          </Box>
+        )}
         
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
@@ -230,7 +243,7 @@ const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, o
           variant="contained"
           fullWidth
           size="large"
-          disabled={!stripe || loading || !clientSecret}
+          disabled={(!testMode && !stripe) || loading || !clientSecret}
           startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Lock />}
           sx={{
             backgroundColor: theme.palette.success.main,
@@ -240,7 +253,7 @@ const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, o
             py: 1.5,
           }}
         >
-          {loading ? 'Processing...' : `Pay €${total.toFixed(2)}`}
+          {loading ? 'Processing...' : testMode ? `Test Pay €${total.toFixed(2)}` : `Pay €${total.toFixed(2)}`}
         </Button>
       </form>
       
@@ -275,8 +288,11 @@ const StripeCheckout = ({ cartItems, total, deliveryData, pickupData, orderType,
     }
   }, [total, onError]);
 
+  // Check if this is test mode
+  const isTestMode = clientSecret && clientSecret.includes('pi_test_');
+  
   const options = {
-    clientSecret,
+    clientSecret: isTestMode ? 'pi_fake_client_secret_for_test' : clientSecret,
     appearance: {
       theme: 'stripe',
     },
@@ -293,6 +309,23 @@ const StripeCheckout = ({ cartItems, total, deliveryData, pickupData, orderType,
     );
   }
 
+  if (isTestMode) {
+    // For test mode, render a simplified checkout form without Stripe Elements
+    return (
+      <CheckoutForm 
+        cartItems={cartItems}
+        total={total}
+        deliveryData={deliveryData}
+        pickupData={pickupData}
+        orderType={orderType}
+        onSuccess={onSuccess}
+        onError={onError}
+        clientSecret={clientSecret}
+        testMode={true}
+      />
+    );
+  }
+
   return (
     <Elements stripe={stripePromise} options={options}>
       <CheckoutForm 
@@ -304,6 +337,7 @@ const StripeCheckout = ({ cartItems, total, deliveryData, pickupData, orderType,
         onSuccess={onSuccess} 
         onError={onError}
         clientSecret={clientSecret}
+        testMode={false}
       />
     </Elements>
   );

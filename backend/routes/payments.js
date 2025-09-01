@@ -47,9 +47,10 @@ router.post('/create-payment-intent', isAuthenticated, [
     
     // Test mode: Create a mock payment intent for testing
     if (process.env.NODE_ENV === 'production' && process.env.STRIPE_TEST_MODE === 'true') {
+      const testId = `pi_test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const mockPaymentIntent = {
-        id: `pi_test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        client_secret: `pi_test_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`,
+        id: testId,
+        client_secret: `${testId}_secret_${Math.random().toString(36).substr(2, 9)}`,
         amount: Math.round(amount * 100),
         currency: currency,
         status: 'requires_payment_method'
