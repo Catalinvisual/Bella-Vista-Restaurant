@@ -247,6 +247,7 @@ const Cart = () => {
           })),
           order_type: 'delivery',
           delivery_address: deliveryAddress,
+          phone_number: deliveryData.phone,
           special_instructions: deliveryData.description || 'Cash on Delivery',
           payment_method: 'cash_on_delivery',
           customer_info: {

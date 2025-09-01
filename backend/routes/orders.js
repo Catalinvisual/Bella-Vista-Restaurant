@@ -117,7 +117,7 @@ router.post('/', isAuthenticated, [
     });
 
     // Add delivery fee if applicable
-    const delivery_fee = order_type === 'delivery' ? 5.99 : 0;
+    const delivery_fee = order_type === 'delivery' ? 3.99 : 0;
     const tax_amount = total_amount * 0.08; // 8% tax
     const final_total = total_amount + delivery_fee + tax_amount;
 
@@ -147,7 +147,7 @@ router.post('/', isAuthenticated, [
 
     // Create order items
     const orderItemsQuery = `
-      INSERT INTO order_items (order_id, menu_item_id, quantity, price, total)
+      INSERT INTO order_items (order_id, menu_item_id, quantity, unit_price, total_price)
       VALUES ($1, $2, $3, $4, $5)
     `;
 
