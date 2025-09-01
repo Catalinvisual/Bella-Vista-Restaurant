@@ -46,8 +46,55 @@ const isAdmin = (req, res, next) => {
   }
 };
 
+// Middleware to check authentication for orders (allows guest checkout for cash on delivery)
+const isAuthenticatedOrGuest = (req, res, next) => {
+  const { payment_method = 'cash_on_delivery' } = req.body;
+  
+  // Allow guest checkout for cash on delivery
+  if (payment_method === 'cash_on_delivery') {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      // Guest user - set req.user to null
+      req.user = null;
+      return next();
+    }
+    
+    const token = authHeader.substring(7);
+    
+    try {
+      const jwt = require('jsonwebtoken');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = { id: decoded.userId, email: decoded.email, role: decoded.role };
+      next();
+    } catch (error) {
+      // Invalid token but cash on delivery - allow as guest
+      req.user = null;
+      next();
+    }
+  } else {
+    // For other payment methods, require authentication
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Authentication required for this payment method' });
+    }
+    
+    const token = authHeader.substring(7);
+    
+    try {
+      const jwt = require('jsonwebtoken');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = { id: decoded.userId, email: decoded.email, role: decoded.role };
+      next();
+    } catch (error) {
+      return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+  }
+};
+
 // Create new order
-router.post('/', isAuthenticated, [
+router.post('/', isAuthenticatedOrGuest, [
   body('items').isArray({ min: 1 }).withMessage('Order must contain at least one item'),
   body('items.*.menu_item_id').isInt({ min: 1 }).withMessage('Valid menu item ID is required'),
   body('items.*.quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
@@ -60,6 +107,7 @@ router.post('/', isAuthenticated, [
   body('customer_info.email').optional().isEmail().withMessage('Please provide a valid email address'),
   body('pickup_time').optional().isISO8601().withMessage('Please provide a valid pickup time'),
   body('order_type').optional().isIn(['delivery', 'pickup']).withMessage('Order type must be delivery or pickup'),
+  body('payment_method').optional().isIn(['cash_on_delivery', 'stripe']).withMessage('Payment method must be cash_on_delivery or stripe')
 ], async (req, res) => {
   const client = await req.app.locals.db.connect();
   
@@ -73,7 +121,14 @@ router.post('/', isAuthenticated, [
     }
 
     const { items, delivery_address, phone_number, special_instructions, order_type = 'delivery', customer_info, pickup_time } = req.body;
-    const user_id = req.user.id;
+    const user_id = req.user ? req.user.id : null;
+    
+    // For guest users, require customer_info
+    if (!req.user && (!customer_info || !customer_info.full_name || !customer_info.email || !customer_info.phone)) {
+      return res.status(400).json({ 
+        message: 'Customer information (full name, email, and phone) is required for guest orders' 
+      });
+    }
 
     await client.query('BEGIN');
 

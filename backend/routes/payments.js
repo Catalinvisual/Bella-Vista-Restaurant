@@ -42,7 +42,7 @@ router.post('/create-payment-intent', isAuthenticated, [
     const { 
       amount, 
       currency = 'eur', 
-      payment_method_types = ['card', 'paypal', 'link']
+      payment_method_types = ['card', 'ideal', 'link']
     } = req.body;
     
     // Filter out payment methods that don't support the currency
