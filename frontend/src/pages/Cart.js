@@ -85,6 +85,7 @@ const Cart = () => {
   const [pickupData, setPickupData] = useState({
     fullName: '',
     email: '',
+    phone: '',
     pickupTime: ''
   });
   const [deliveryErrors, setDeliveryErrors] = useState({});
@@ -134,6 +135,10 @@ const Cart = () => {
     
     if (!pickupData.fullName.trim()) {
       errors.fullName = 'Full name is required';
+    }
+    
+    if (!pickupData.phone.trim()) {
+      errors.phone = 'Phone number is required';
     }
     
     if (!pickupData.email.trim()) {
@@ -735,16 +740,31 @@ const Cart = () => {
                     fullWidth
                   />
                   
-                  <TextField
-                    label="Email Address"
-                    type="email"
-                    value={pickupData.email}
-                    onChange={(e) => handlePickupInputChange('email', e.target.value)}
-                    error={!!deliveryErrors.email}
-                    helperText={deliveryErrors.email}
-                    required
-                    fullWidth
-                  />
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Phone Number"
+                        value={pickupData.phone}
+                        onChange={(e) => handlePickupInputChange('phone', e.target.value)}
+                        error={!!deliveryErrors.phone}
+                        helperText={deliveryErrors.phone}
+                        required
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Email Address"
+                        type="email"
+                        value={pickupData.email}
+                        onChange={(e) => handlePickupInputChange('email', e.target.value)}
+                        error={!!deliveryErrors.email}
+                        helperText={deliveryErrors.email}
+                        required
+                        fullWidth
+                      />
+                    </Grid>
+                  </Grid>
                   
                   <TextField
                     label="Preferred Pickup Time"
