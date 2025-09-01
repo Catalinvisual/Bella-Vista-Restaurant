@@ -60,8 +60,14 @@ const allowedOrigins = [
   "https://bella-vista-restaurant.onrender.com",
   "https://bella-vista-restaurant-1.onrender.com",
   "https://bella-vista-backend.onrender.com",
+  "https://bella-vista-restaurant-frontend.onrender.com",
+  "https://bellavista-restaurant.onrender.com",
   "https://www.google.com",
   "https://accounts.google.com",
+  "https://maps.google.com",
+  "https://maps.googleapis.com",
+  "https://www.googletagmanager.com",
+  "https://www.google-analytics.com",
   "https://js.stripe.com",
   "https://checkout.stripe.com",
   "https://api.stripe.com",
@@ -78,7 +84,7 @@ app.use(helmet({
       "connect-src": allowedOrigins,
       "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:", "https://js.stripe.com"],
       "style-src": ["'self'", "'unsafe-inline'", "https:"],
-      "frame-src": ["'self'", "https://www.google.com", "https://accounts.google.com", "https://js.stripe.com", "https://checkout.stripe.com"],
+      "frame-src": ["'self'", "https://www.google.com", "https://accounts.google.com", "https://maps.google.com", "https://js.stripe.com", "https://checkout.stripe.com"],
       "font-src": ["'self'", "https:", "data:"],
     },
   },
@@ -90,7 +96,10 @@ const corsOrigins = [
   'http://localhost:3000',
   'https://bella-vista-restaurant-1.onrender.com',
   'https://bella-vista-restaurant.onrender.com',
-  'https://bella-vista-backend.onrender.com'
+  'https://bella-vista-backend.onrender.com',
+  // Add more variations to ensure compatibility
+  'https://bella-vista-restaurant-frontend.onrender.com',
+  'https://bellavista-restaurant.onrender.com'
 ];
 
 app.use(cors({
