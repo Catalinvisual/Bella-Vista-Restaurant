@@ -254,8 +254,8 @@ router.post('/confirm-payment', isAuthenticated, [
             'menu_item_id', oi.menu_item_id,
             'menu_item_name', mi.name,
             'quantity', oi.quantity,
-            'price', oi.price,
-            'total', oi.total
+            'price', oi.unit_price,
+            'total', oi.total_price
           )
         ) as items
       FROM orders o

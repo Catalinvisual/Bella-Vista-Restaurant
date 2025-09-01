@@ -202,7 +202,7 @@ router.post('/', isAuthenticatedOrGuest, [
 
     // Create order items
     const orderItemsQuery = `
-      INSERT INTO order_items (order_id, menu_item_id, quantity, price, total)
+      INSERT INTO order_items (order_id, menu_item_id, quantity, unit_price, total_price)
       VALUES ($1, $2, $3, $4, $5)
     `;
 
@@ -226,8 +226,8 @@ router.post('/', isAuthenticatedOrGuest, [
             'menu_item_id', oi.menu_item_id,
             'menu_item_name', mi.name,
             'quantity', oi.quantity,
-            'price', oi.price,
-            'total', oi.total
+            'price', oi.unit_price,
+            'total', oi.total_price
           )
         ) as items
       FROM orders o
@@ -281,8 +281,8 @@ router.get('/my-orders', isAuthenticated, async (req, res) => {
             'menu_item_id', oi.menu_item_id,
             'menu_item_name', mi.name,
             'quantity', oi.quantity,
-            'price', oi.price,
-            'total', oi.total
+            'price', oi.unit_price,
+            'total', oi.total_price
           )
         ) as items
       FROM orders o
