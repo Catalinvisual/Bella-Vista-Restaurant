@@ -24,6 +24,20 @@ import { getApiUrl } from '../utils/api';
 axios.defaults.baseURL = getApiUrl();
 axios.defaults.withCredentials = true;
 
+// Add request interceptor to include JWT token
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Load Stripe (use your publishable key)
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51234567890abcdef');
 
@@ -38,6 +52,13 @@ const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, o
     event.preventDefault();
 
     if (!stripe || !elements) {
+      return;
+    }
+
+    // Check if Payment Element is mounted and ready
+    const paymentElement = elements.getElement('payment');
+    if (!paymentElement) {
+      setError('Payment form is not ready. Please wait a moment and try again.');
       return;
     }
 
