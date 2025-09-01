@@ -25,7 +25,7 @@ const isAuthenticated = (req, res, next) => {
 };
 
 // Create payment intent
-router.post('/create-payment-intent', [
+router.post('/create-payment-intent', isAuthenticated, [
   body('amount').isFloat({ min: 0.5 }).withMessage('Amount must be at least $0.50'),
   body('currency').optional().isIn(['usd', 'eur']).withMessage('Currency must be USD or EUR'),
   body('payment_method_types').optional().isArray().withMessage('Payment method types must be an array'),
