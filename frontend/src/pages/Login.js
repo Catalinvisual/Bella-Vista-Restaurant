@@ -80,7 +80,7 @@ const Login = () => {
 
   const handleGoogleLogin = () => {
     // Redirect to backend Google OAuth endpoint
-    const baseUrl = process.env.NODE_ENV === 'production' ? '' : (process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000');
+    const baseUrl = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
     window.location.href = `${baseUrl}/api/auth/google`;
   };
 
