@@ -95,6 +95,7 @@ const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, o
             })),
             order_type: 'delivery',
             delivery_address: deliveryAddress,
+            phone_number: deliveryData.phone,
             special_instructions: deliveryData.description || '',
             customer_info: {
               full_name: deliveryData.fullName,
@@ -111,11 +112,12 @@ const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, o
               price: parseFloat(item.price)
             })),
             order_type: 'pickup',
+            phone_number: pickupData.phone || '',
             pickup_time: pickupData.pickupTime,
             special_instructions: '',
             customer_info: {
               full_name: pickupData.fullName,
-              phone: null,
+              phone: pickupData.phone,
               email: pickupData.email
             }
           };

@@ -264,12 +264,13 @@ const Cart = () => {
             price: parseFloat(item.price)
           })),
           order_type: 'pickup',
+          phone_number: pickupData.phone || '',
           pickup_time: pickupData.pickupTime,
           special_instructions: 'Cash on Pickup',
           payment_method: 'cash_on_delivery',
           customer_info: {
             full_name: pickupData.fullName,
-            phone: null,
+            phone: pickupData.phone,
             email: pickupData.email
           }
         };
