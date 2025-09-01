@@ -84,7 +84,7 @@ router.get('/dashboard', isAdmin, async (req, res) => {
         SELECT 
           mi.name,
           SUM(oi.quantity) as total_sold,
-          SUM(oi.total) as total_revenue
+          SUM(oi.total_price) as total_revenue
         FROM order_items oi
         JOIN menu_items mi ON oi.menu_item_id = mi.id
         JOIN orders o ON oi.order_id = o.id
@@ -387,7 +387,7 @@ router.get('/reports/menu-performance', isAdmin, async (req, res) => {
         mi.price,
         COUNT(oi.id) as times_ordered,
         SUM(oi.quantity) as total_quantity_sold,
-        SUM(oi.total) as total_revenue,
+        SUM(oi.total_price) as total_revenue,
         AVG(oi.quantity) as avg_quantity_per_order
       FROM menu_items mi
       LEFT JOIN order_items oi ON mi.id = oi.menu_item_id
@@ -533,7 +533,7 @@ router.get('/orders', isAdmin, async (req, res) => {
           JSON_BUILD_OBJECT(
             'name', mi.name,
             'quantity', oi.quantity,
-            'price', oi.price
+            'price', oi.unit_price
           )
         ) as items
       FROM orders o
