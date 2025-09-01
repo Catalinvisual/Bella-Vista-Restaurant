@@ -105,46 +105,61 @@ router.post('/register', [
 router.post('/login', [
   body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
   body('password').notEmpty().withMessage('Password is required'),
-], (req, res, next) => {
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ 
-      message: 'Validation failed', 
-      errors: errors.array() 
-    });
-  }
-
-  passport.authenticate('local', (err, user, info) => {
-    if (err) {
-      console.error('Login error:', err);
-      return res.status(500).json({ message: 'Internal server error' });
-    }
-
-    if (!user) {
-      return res.status(401).json({ message: info.message || 'Invalid credentials' });
-    }
-
-    req.logIn(user, (err) => {
-      if (err) {
-        console.error('Session error:', err);
-        return res.status(500).json({ message: 'Session error' });
-      }
-
-      // Generate JWT token
-      const token = jwt.sign(
-        { userId: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: '24h' }
-      );
-
-      res.json({
-        message: 'Login successful',
-        user,
-        token
+], async (req, res) => {
+  try {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        message: 'Validation failed', 
+        errors: errors.array() 
       });
+    }
+
+    const { email, password } = req.body;
+    const pool = req.app.locals.db;
+
+    // Check if user exists
+    const userQuery = 'SELECT * FROM users WHERE email = $1';
+    const userResult = await pool.query(userQuery, [email]);
+    
+    if (userResult.rows.length === 0) {
+      return res.status(401).json({ message: 'No user found with that email' });
+    }
+    
+    const user = userResult.rows[0];
+    
+    // Check if account is active
+    if (!user.is_active) {
+      return res.status(401).json({ message: 'Account is deactivated' });
+    }
+    
+    // Check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Incorrect password' });
+    }
+    
+    // Remove password from user object
+    const { password: userPassword, ...userWithoutPassword } = user;
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      message: 'Login successful',
+      user: userWithoutPassword,
+      token
     });
-  })(req, res, next);
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 // Google OAuth routes
