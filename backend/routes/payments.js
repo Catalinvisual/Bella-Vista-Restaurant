@@ -162,7 +162,7 @@ router.post('/confirm-payment', isAuthenticated, [
 
     // Add delivery fee and tax
     const delivery_fee = order_type === 'delivery' ? 3.99 : 0;
-    const tax_amount = total_amount * 0.085; // 8.5% tax
+    const tax_amount = total_amount * 0.08; // 8% tax (matching orders.js)
     const final_total = total_amount + delivery_fee + tax_amount;
 
     // Verify the payment amount matches our calculation

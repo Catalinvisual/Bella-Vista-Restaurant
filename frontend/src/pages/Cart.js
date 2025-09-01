@@ -311,7 +311,7 @@ const Cart = () => {
 
   const calculateTotal = () => {
     const subtotal = getCartTotal();
-    const tax = subtotal * 0.085;
+    const tax = subtotal * 0.08;
     const deliveryFee = orderType === 'delivery' ? 3.99 : 0;
     return subtotal + tax + deliveryFee;
   };
@@ -556,9 +556,9 @@ const Cart = () => {
             </Box>
             
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-              <Typography variant="body1">Tax (8.5%):</Typography>
+              <Typography variant="body1">Tax (8%):</Typography>
               <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                €{(getCartTotal() * 0.085).toFixed(2)}
+                €{(getCartTotal() * 0.08).toFixed(2)}
               </Typography>
             </Box>
             
