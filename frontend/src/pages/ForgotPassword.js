@@ -41,7 +41,7 @@ const ForgotPassword = () => {
         setMessage('Password reset instructions have been sent to your email address.');
         setEmailSent(true);
       } else {
-        setError(result.message);
+        setError(result.error || 'Failed to send reset email');
       }
     } catch (err) {
       setError('An unexpected error occurred');
