@@ -69,7 +69,7 @@ const Login = () => {
       if (result.success) {
         navigate('/');
       } else {
-        setError(result.message);
+        setError(result.error || 'Login failed');
       }
     } catch (err) {
       setError('An unexpected error occurred');
