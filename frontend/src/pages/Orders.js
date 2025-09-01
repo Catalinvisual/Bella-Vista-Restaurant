@@ -32,6 +32,15 @@ import { getApiUrl } from '../utils/api';
 axios.defaults.baseURL = getApiUrl();
 axios.defaults.withCredentials = true;
 
+// Add token to requests if available
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 const Orders = () => {
   const theme = useTheme();
   const { isAuthenticated, user } = useAuth();
