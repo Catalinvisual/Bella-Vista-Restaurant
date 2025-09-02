@@ -120,8 +120,9 @@ router.post('/', isAuthenticatedOrGuest, [
       });
     }
 
-    const { items, delivery_address, phone_number, special_instructions, order_type = 'delivery', customer_info, pickup_time } = req.body;
+    const { items, delivery_address, special_instructions, order_type = 'delivery', customer_info, pickup_time } = req.body;
     const user_id = req.user ? req.user.id : 9; // Use guest user ID for guest orders
+    const phone_number = req.body.phone_number || customer_info?.phone || null;
     
     // For guest users, require customer_info
     if (!req.user && (!customer_info || !customer_info.full_name || !customer_info.email || !customer_info.phone)) {
