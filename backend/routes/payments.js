@@ -24,6 +24,15 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
+// Test route to verify payments router is working
+router.get('/test', (req, res) => {
+  res.json({ 
+    message: 'Payments router is working', 
+    timestamp: new Date().toISOString(),
+    routes: ['POST /create-payment-intent', 'POST /confirm-payment', 'POST /webhook', 'POST /test-email']
+  });
+});
+
 // Create payment intent (with test mode fallback)
 router.post('/create-payment-intent', isAuthenticated, [
   body('amount').isFloat({ min: 0.5 }).withMessage('Amount must be at least $0.50'),
