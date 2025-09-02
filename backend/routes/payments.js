@@ -137,31 +137,6 @@ router.post('/confirm-payment', isAuthenticated, [
     const { payment_intent_id, items, delivery_address, special_instructions, order_type = 'delivery', customer_info, pickup_time } = req.body;
     const user_id = req.user.id;
 
-    // Verify payment intent (with test mode support)
-    let paymentIntent;
-    let isTestMode = false;
-    
-    if (payment_intent_id.startsWith('pi_test_')) {
-      // Test mode: Mock successful payment
-      isTestMode = true;
-      paymentIntent = {
-        id: payment_intent_id,
-        status: 'succeeded',
-        amount: items.reduce((total, item) => total + (item.price * item.quantity * 100), 0),
-        currency: 'eur'
-      };
-    } else {
-      // Real Stripe payment
-      paymentIntent = await stripe.paymentIntents.retrieve(payment_intent_id);
-      
-      if (paymentIntent.status !== 'succeeded') {
-        return res.status(400).json({ 
-          message: 'Payment not completed',
-          status: paymentIntent.status 
-        });
-      }
-    }
-
     await client.query('BEGIN');
 
     // Verify all menu items exist and are available
@@ -208,12 +183,42 @@ router.post('/confirm-payment', isAuthenticated, [
     const tax_amount = total_amount * 0.08; // 8% tax (matching orders.js)
     const final_total = total_amount + delivery_fee + tax_amount;
 
+    // Verify payment intent (with test mode support)
+    let paymentIntent;
+    let isTestMode = false;
+    
+    if (payment_intent_id.startsWith('pi_test_')) {
+      // Test mode: Mock successful payment
+      isTestMode = true;
+      
+      // Use the same validated total calculation as the backend validation
+      // This ensures test mode uses the same amounts as the validation logic
+      paymentIntent = {
+        id: payment_intent_id,
+        status: 'succeeded',
+        amount: Math.round(final_total * 100), // Use the validated final_total
+        currency: 'eur'
+      };
+    } else {
+      // Real Stripe payment
+      paymentIntent = await stripe.paymentIntents.retrieve(payment_intent_id);
+      
+      if (paymentIntent.status !== 'succeeded') {
+        await client.query('ROLLBACK');
+        return res.status(400).json({ 
+          message: 'Payment not completed',
+          status: paymentIntent.status 
+        });
+      }
+    }
+
     // Verify the payment amount matches our calculation
     const expectedAmountInCents = Math.round(final_total * 100);
+    
     if (paymentIntent.amount !== expectedAmountInCents) {
       await client.query('ROLLBACK');
       return res.status(400).json({ 
-        message: 'Payment amount does not match order total' 
+        message: 'Payment amount does not match order total'
       });
     }
 
