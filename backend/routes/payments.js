@@ -230,7 +230,7 @@ router.post('/confirm-payment', isAuthenticated, [
 
     // Create order items
     const orderItemsQuery = `
-      INSERT INTO order_items (order_id, menu_item_id, quantity, price, total)
+      INSERT INTO order_items (order_id, menu_item_id, quantity, unit_price, total_price)
       VALUES ($1, $2, $3, $4, $5)
     `;
 
