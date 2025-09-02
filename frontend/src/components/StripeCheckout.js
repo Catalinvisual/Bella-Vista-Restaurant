@@ -140,7 +140,7 @@ const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, o
           };
         }
 
-        const response = await axios.post('/payments/confirm-payment', orderData);
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/payments/confirm-payment`, orderData);
         
         if (response.data.message === 'Order created successfully') {
           onSuccess(response.data.order);
