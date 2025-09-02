@@ -256,8 +256,33 @@ router.post('/', isAuthenticatedOrGuest, [
     });
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Error creating order:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Error creating order:', {
+      message: error.message,
+      stack: error.stack,
+      user_id: req.user ? req.user.id : 'guest',
+      order_data: {
+        items: req.body.items?.length || 0,
+        order_type: req.body.order_type,
+        payment_method: req.body.payment_method,
+        has_customer_info: !!req.body.customer_info
+      }
+    });
+    
+    // Provide more specific error messages
+    let errorMessage = 'Internal server error';
+    if (error.message.includes('violates foreign key constraint')) {
+      errorMessage = 'Invalid menu item selected';
+    } else if (error.message.includes('violates not-null constraint')) {
+      errorMessage = 'Missing required order information';
+    } else if (error.message.includes('connection')) {
+      errorMessage = 'Database connection error';
+    }
+    
+    res.status(500).json({ 
+      message: errorMessage,
+      error_code: 'ORDER_CREATION_FAILED',
+      timestamp: new Date().toISOString()
+    });
   } finally {
     client.release();
   }

@@ -301,8 +301,27 @@ const Cart = () => {
         setTimeout(() => navigate('/orders'), 2000);
       }
     } catch (error) {
-      console.error('Cash on delivery checkout error:', error);
-      const errorMessage = error.response?.data?.message || 'Failed to place order. Please try again.';
+      console.error('Cash on delivery checkout error:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: error.config?.url,
+        method: error.config?.method,
+        headers: error.config?.headers
+      });
+      
+      let errorMessage = 'Failed to place order. Please try again.';
+      
+      if (error.response?.status === 401) {
+        errorMessage = 'Authentication failed. Please log in and try again.';
+      } else if (error.response?.status === 400) {
+        errorMessage = error.response?.data?.message || 'Invalid order information. Please check your details.';
+      } else if (error.response?.status === 500) {
+        errorMessage = error.response?.data?.message || 'Server error. Please try again later.';
+      } else if (error.code === 'NETWORK_ERROR') {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      }
+      
       setSnackbar({ open: true, message: errorMessage, severity: 'error' });
     } finally {
       setLoading(false);

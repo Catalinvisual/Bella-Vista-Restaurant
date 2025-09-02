@@ -295,7 +295,7 @@ router.post('/confirm-payment', isAuthenticated, [
 });
 
 // Stripe webhook endpoint
-router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
+router.post('/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
