@@ -217,8 +217,8 @@ router.post('/', isAuthenticatedOrGuest, [
     const completeOrderQuery = `
       SELECT 
         o.*,
-        COALESCE(o.customer_name, u.full_name) as customer_name,
-        COALESCE(o.customer_email, u.email) as customer_email,
+        u.full_name as customer_name,
+        u.email as customer_email,
         json_agg(
           json_build_object(
             'id', oi.id,
@@ -234,7 +234,7 @@ router.post('/', isAuthenticatedOrGuest, [
       LEFT JOIN order_items oi ON o.id = oi.order_id
       LEFT JOIN menu_items mi ON oi.menu_item_id = mi.id
       WHERE o.id = $1
-      GROUP BY o.id, o.customer_name, o.customer_email, u.full_name, u.email
+      GROUP BY o.id, u.full_name, u.email
     `;
 
     const completeOrderResult = await client.query(completeOrderQuery, [order.id]);
