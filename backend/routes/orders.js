@@ -181,10 +181,9 @@ router.post('/', isAuthenticatedOrGuest, [
       INSERT INTO orders (
         user_id, total_amount, tax_amount, delivery_fee, final_total,
         order_type, status, delivery_address, phone_number, special_instructions,
-        customer_email, customer_name, customer_phone, pickup_time,
-        payment_method, payment_status, created_at, updated_at
+        pickup_time, payment_method, payment_status, created_at, updated_at
       )
-      VALUES ($1, $2, $3, $4, $5, $6, 'pending', $7, $8, $9, $10, $11, $12, $13, $14, $15, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      VALUES ($1, $2, $3, $4, $5, $6, 'pending', $7, $8, $9, $10, $11, $12, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       RETURNING *
     `;
 
@@ -194,7 +193,6 @@ router.post('/', isAuthenticatedOrGuest, [
     const orderResult = await client.query(orderQuery, [
       user_id, total_amount, tax_amount, delivery_fee, final_total,
       order_type, delivery_address, phone_number, special_instructions,
-      customer_info?.email || null, customer_info?.full_name || null, customer_info?.phone || null,
       pickup_time || null, payment_method, payment_status
     ]);
 
