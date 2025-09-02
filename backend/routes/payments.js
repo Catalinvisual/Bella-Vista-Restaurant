@@ -222,17 +222,16 @@ router.post('/confirm-payment', isAuthenticated, [
       INSERT INTO orders (
         user_id, total_amount, tax_amount, delivery_fee, final_total,
         order_type, status, delivery_address, special_instructions, pickup_time,
-        payment_intent_id, payment_status, customer_email, customer_name, customer_phone,
-        created_at, updated_at
+        payment_intent_id, payment_status, phone_number, payment_method
       )
-      VALUES ($1, $2, $3, $4, $5, $6, 'confirmed', $7, $8, $9, $10, 'paid', $11, $12, $13, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      VALUES ($1, $2, $3, $4, $5, $6, 'confirmed', $7, $8, $9, $10, 'paid', $11, 'stripe')
       RETURNING *
     `;
 
     const orderResult = await client.query(orderQuery, [
       user_id, total_amount, tax_amount, delivery_fee, final_total,
       order_type, delivery_address, special_instructions, pickup_time || null, payment_intent_id,
-      customer_info?.email || null, customer_info?.full_name || null, customer_info?.phone || null
+      customer_info?.phone || null
     ]);
 
     const order = orderResult.rows[0];
@@ -255,8 +254,8 @@ router.post('/confirm-payment', isAuthenticated, [
     const completeOrderQuery = `
       SELECT 
         o.*,
-        COALESCE(o.customer_name, u.full_name) as customer_name,
-        COALESCE(o.customer_email, u.email) as customer_email,
+        u.full_name as customer_name,
+        u.email as customer_email,
         json_agg(
           json_build_object(
             'id', oi.id,
@@ -272,7 +271,7 @@ router.post('/confirm-payment', isAuthenticated, [
       LEFT JOIN order_items oi ON o.id = oi.order_id
       LEFT JOIN menu_items mi ON oi.menu_item_id = mi.id
       WHERE o.id = $1
-      GROUP BY o.id, o.customer_name, o.customer_email, u.full_name, u.email
+      GROUP BY o.id, u.full_name, u.email
     `;
 
     const completeOrderResult = await client.query(completeOrderQuery, [order.id]);
