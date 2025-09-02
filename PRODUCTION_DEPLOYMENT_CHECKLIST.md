@@ -20,6 +20,8 @@
 - [x] **Stripe integration working** - Both development and production keys configured
 - [x] **Cash on delivery/pickup fixed** - Database schema supports payment method selection
 - [x] **Payment processing endpoints ready** - All payment routes properly configured
+- [x] **Webhook endpoint enhanced** - Production-ready webhook with comprehensive error handling and logging
+- [ ] **Production Stripe webhook configured** - Needs to be set up in Stripe Dashboard (see Webhook Configuration section below)
 
 ## 🚀 Deployment Steps for Render
 
@@ -82,6 +84,65 @@
 ### Frontend Files:
 - `.env.development` - Updated Stripe publishable key
 - `.env.production` - Production environment variables
+
+## 🔗 Webhook Configuration for Production
+
+### Step 1: Set Up Stripe Webhook in Dashboard
+1. **Log in to Stripe Dashboard** (https://dashboard.stripe.com)
+2. **Navigate to Webhooks** (Developers → Webhooks)
+3. **Click "Add endpoint"**
+4. **Configure the webhook:**
+   - **Endpoint URL**: `https://bella-vista-backend.onrender.com/api/payments/webhook`
+   - **Events to send**: Select the following events:
+     - `payment_intent.succeeded`
+     - `payment_intent.payment_failed`
+     - `payment_intent.canceled`
+     - `payment_method.attached`
+   - **API Version**: Use the latest version (2023-10-16 or newer)
+
+### Step 2: Get Webhook Secret
+1. **After creating the webhook**, click on it to view details
+2. **Copy the "Signing secret"** (starts with `whsec_`)
+3. **Update environment variables** in Render:
+   - Go to your backend service in Render dashboard
+   - Navigate to Environment tab
+   - Update `STRIPE_WEBHOOK_SECRET` with the new signing secret
+
+### Step 3: Update Stripe Keys for Production
+1. **Get production keys from Stripe Dashboard:**
+   - **Secret Key**: `sk_live_...` (for `STRIPE_SECRET_KEY`)
+   - **Publishable Key**: `pk_live_...` (for `REACT_APP_STRIPE_PUBLISHABLE_KEY`)
+2. **Update backend environment variables** in Render:
+   - `STRIPE_SECRET_KEY=sk_live_...`
+   - `STRIPE_TEST_MODE=false`
+3. **Update frontend environment variables** in Render:
+   - `REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_live_...`
+
+### Step 4: Test Webhook
+1. **Deploy the updated configuration**
+2. **Test webhook in Stripe Dashboard:**
+   - Go to your webhook endpoint
+   - Click "Send test webhook"
+   - Select `payment_intent.succeeded` event
+   - Check your backend logs for webhook processing messages
+3. **Verify logs show:**
+   ```
+   ✅ Webhook verified: payment_intent.succeeded (evt_...)
+   💰 Payment succeeded: pi_... - Amount: 2000 eur
+   ✅ Webhook processed successfully: payment_intent.succeeded
+   ```
+
+### Step 5: Monitor Webhook Health
+1. **Check webhook delivery** in Stripe Dashboard
+2. **Monitor backend logs** for webhook processing
+3. **Set up alerts** for failed webhook deliveries
+
+### Webhook Security Features
+- ✅ **Signature verification** - Validates requests are from Stripe
+- ✅ **Environment validation** - Checks webhook secret is configured
+- ✅ **Comprehensive logging** - Detailed logs for debugging
+- ✅ **Error handling** - Graceful handling of processing errors
+- ✅ **Event acknowledgment** - Always returns 200 status to Stripe
 
 ## 🚨 Important Notes
 

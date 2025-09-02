@@ -295,41 +295,95 @@ router.post('/confirm-payment', isAuthenticated, [
 });
 
 // Stripe webhook endpoint
+// Stripe webhook endpoint for production
 router.post('/webhook', async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  // Validate webhook secret is configured
+  if (!endpointSecret) {
+    console.error('❌ STRIPE_WEBHOOK_SECRET not configured');
+    return res.status(500).json({ error: 'Webhook not configured' });
+  }
+
+  // Verify req.body is a Buffer (required for Stripe signature verification)
+  console.log('Is Buffer:', Buffer.isBuffer(req.body)); // must be true
+  if (!Buffer.isBuffer(req.body)) {
+    console.error('❌ Request body is not a Buffer. Stripe webhooks require raw body.');
+    console.error('Body type:', typeof req.body);
+    return res.status(400).json({ error: 'Invalid request body format' });
+  }
+
   let event;
 
   try {
+    // Construct and verify the webhook event with raw body
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    console.log(`✅ Webhook verified: ${event.type} (${event.id})`);
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
+    console.error('⚠️ Webhook signature verification failed:', err.message);
+    console.error('Headers:', req.headers);
+    console.error('Body type:', typeof req.body);
+    console.error('Body length:', req.body ? req.body.length : 'undefined');
+    console.error('Is Buffer:', Buffer.isBuffer(req.body));
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Handle the event
-  switch (event.type) {
-    case 'payment_intent.succeeded':
-      const paymentIntent = event.data.object;
-      console.log('Payment succeeded:', paymentIntent.id);
-      
-      // You can add additional logic here to update order status
-      // For example, mark the order as confirmed in the database
-      break;
-      
-    case 'payment_intent.payment_failed':
-      const failedPayment = event.data.object;
-      console.log('Payment failed:', failedPayment.id);
-      
-      // Handle failed payment - maybe send notification or update order status
-      break;
-      
-    default:
-      console.log(`Unhandled event type ${event.type}`);
+  // Handle the event based on type
+  try {
+    switch (event.type) {
+      case 'payment_intent.succeeded':
+        const paymentIntent = event.data.object;
+        console.log(`💰 Payment succeeded: ${paymentIntent.id} - Amount: ${paymentIntent.amount} ${paymentIntent.currency}`);
+        
+        // TODO: Update order status in database
+        // You can add logic here to:
+        // 1. Find the order by payment_intent_id
+        // 2. Update order status to 'confirmed' or 'paid'
+        // 3. Send confirmation email to customer
+        // 4. Notify restaurant staff
+        
+        break;
+        
+      case 'payment_intent.payment_failed':
+        const failedPayment = event.data.object;
+        console.log(`❌ Payment failed: ${failedPayment.id} - Reason: ${failedPayment.last_payment_error?.message || 'Unknown'}`);
+        
+        // TODO: Handle failed payment
+        // You can add logic here to:
+        // 1. Update order status to 'payment_failed'
+        // 2. Send notification to customer
+        // 3. Log for manual review
+        
+        break;
+        
+      case 'payment_intent.canceled':
+        const canceledPayment = event.data.object;
+        console.log(`🚫 Payment canceled: ${canceledPayment.id}`);
+        
+        // TODO: Handle canceled payment
+        // Update order status to 'canceled'
+        
+        break;
+        
+      case 'payment_method.attached':
+        console.log(`🔗 Payment method attached: ${event.data.object.id}`);
+        break;
+        
+      default:
+        console.log(`ℹ️ Unhandled event type: ${event.type}`);
+    }
+    
+    // Log successful webhook processing
+    console.log(`✅ Webhook processed successfully: ${event.type}`);
+    
+  } catch (processingError) {
+    console.error(`❌ Error processing webhook ${event.type}:`, processingError);
+    // Still return 200 to acknowledge receipt, but log the error
   }
 
-  res.json({received: true});
+  // Always acknowledge receipt of the event
+  res.status(200).json({ received: true, event_type: event.type, event_id: event.id });
 });
 
 // Test email endpoint

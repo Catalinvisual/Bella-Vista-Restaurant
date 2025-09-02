@@ -117,8 +117,11 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
-// Apply JSON parsing to all routes except Stripe webhook
+// IMPORTANT: Raw body parsing for Stripe webhooks MUST come before express.json()
+// Stripe requires raw Buffer for webhook signature verification
 app.use('/api/payments/webhook', express.raw({type: 'application/json'}));
+
+// Standard JSON parsing for all other routes
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
