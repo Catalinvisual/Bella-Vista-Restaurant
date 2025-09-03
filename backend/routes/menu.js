@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
     const itemsQuery = `
       SELECT 
         mi.id, mi.name, mi.description, mi.price, mi.image_url, 
-        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info,
+        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info, mi.label,
         mc.name as category_name, mc.id as category_id
       FROM menu_items mi
       LEFT JOIN menu_categories mc ON mi.category_id = mc.id
@@ -81,7 +81,7 @@ router.get('/items', async (req, res) => {
     let query = `
       SELECT 
         mi.id, mi.name, mi.description, mi.price, mi.image_url, 
-        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info,
+        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info, mi.label,
         mc.name as category_name, mc.id as category_id
       FROM menu_items mi
       LEFT JOIN menu_categories mc ON mi.category_id = mc.id
@@ -136,7 +136,7 @@ router.get('/featured', async (req, res) => {
     const query = `
       SELECT 
         mi.id, mi.name, mi.description, mi.price, mi.image_url, 
-        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info,
+        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info, mi.label,
         mc.name as category_name
       FROM menu_items mi
       LEFT JOIN menu_categories mc ON mi.category_id = mc.id
@@ -165,7 +165,7 @@ router.get('/items/:id', async (req, res) => {
     const query = `
       SELECT 
         mi.id, mi.name, mi.description, mi.price, mi.image_url, 
-        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info,
+        mi.is_available, mi.is_featured, mi.allergens, mi.dietary_info, mi.label,
         mi.preparation_time, mi.created_at, mi.updated_at,
         mc.name as category_name, mc.id as category_id
       FROM menu_items mi
