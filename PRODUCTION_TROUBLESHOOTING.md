@@ -120,12 +120,42 @@ Connect to production database:
 psql postgresql://bella_user:W6KwW991u2Pt8wfyrDsx6ZbpJU5LlxyM@dpg-d2q1ifmr433s73dq11tg-a.oregon-postgres.render.com/bella_vista_db_dwub
 ```
 
-## Next Steps
+## 🚨 CRITICAL: Backend Service Not Running on Render
 
-1. **Redeploy Services**: After API URL fix, redeploy both services
-2. **Test Thoroughly**: Verify all functionality works
-3. **Monitor Logs**: Watch for any new errors
-4. **Update Stripe**: Switch to live keys when ready for production payments
+**ISSUE IDENTIFIED**: The backend service on Render is not responding correctly:
+- API calls to `https://bella-vista-restaurant-1.onrender.com/api/health` return HTML instead of JSON
+- This indicates the backend service is either not running or misconfigured
+- Local backend works perfectly (confirmed)
+
+### Immediate Actions Required:
+
+1. **Check Render Backend Service Status**:
+   - Go to [Render Dashboard](https://dashboard.render.com)
+   - Find your backend service (`bella-vista-restaurant-1`)
+   - Check if the service is "Live" or has deployment errors
+   - Review the deployment logs for errors
+
+2. **Verify Backend Service Configuration**:
+   - Ensure the service is set to "Web Service" (not Static Site)
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+   - Environment: `Node`
+
+3. **Check Environment Variables on Render**:
+   - Verify all variables from `.env.production` are set in Render dashboard
+   - Especially: `DATABASE_URL`, `PORT`, `NODE_ENV=production`
+
+4. **Manual Redeploy**:
+   - Trigger a manual deploy from the Render dashboard
+   - Monitor the build and deploy logs carefully
+
+## 🚀 Next Steps
+
+1. **Fix Render Backend Deployment**: Follow the critical steps above
+2. **Verify Backend Health**: Test `/api/health` endpoint after redeploy
+3. **Check Database Connection**: Test `/api/db-test` endpoint
+4. **Test Admin Dashboard**: Verify 500 errors are resolved
+5. **Monitor All Services**: Ensure both frontend and backend are running
 
 ## Support Resources
 
