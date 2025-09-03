@@ -165,7 +165,7 @@ router.get('/users', isAdmin, async (req, res) => {
     
     let query = `
       SELECT 
-        id, username, full_name, email, phone_number, role, is_active, 
+        id, full_name, email, phone_number, role, is_active, 
         email_verified, created_at, updated_at,
         (SELECT COUNT(*) FROM orders WHERE user_id = users.id) as total_orders,
         (SELECT COALESCE(SUM(final_total), 0) FROM orders WHERE user_id = users.id) as total_spent
