@@ -172,8 +172,22 @@ const CheckoutForm = ({ cartItems, total, deliveryData, pickupData, orderType, o
     fields: {
       billingDetails: {
         name: 'auto',
-        email: 'auto'
+        email: 'auto',
+        address: {
+          country: 'auto'
+        }
       }
+    },
+    defaultValues: {
+      billingDetails: {
+        address: {
+          country: 'NL'
+        }
+      }
+    },
+    wallets: {
+      applePay: 'never',
+      googlePay: 'never'
     }
   };
 
