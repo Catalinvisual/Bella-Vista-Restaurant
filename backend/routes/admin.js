@@ -587,7 +587,7 @@ router.get('/reservations', isAdmin, async (req, res) => {
     
     let query = `
       SELECT 
-        r.id, r.customer_name as name, r.customer_email as email, r.customer_phone as phone, r.party_size as guests, 
+        r.id, r.guest_name as name, r.guest_email as email, r.guest_phone as phone, r.party_size as guests, 
         r.reservation_date, r.reservation_time, r.special_requests, 
         r.status, r.created_at, r.updated_at,
         u.full_name as user_full_name
