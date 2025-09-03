@@ -319,9 +319,9 @@ const Home = () => {
                   sx={{
                     // Small Mobile: under 480px - 1 product per row
                     width: { xs: '100%' },
-                    // Medium Mobile: 480px-767px - 1 product per row  
+                    // Medium Mobile: 480px-767px - 2 products per row  
                     '@media (min-width: 480px) and (max-width: 767px)': {
-                      width: '100%'
+                      width: '50%'
                     },
                     // Small Tablet: 768px-991px - 2 products per row
                     '@media (min-width: 768px) and (max-width: 991px)': {

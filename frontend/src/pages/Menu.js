@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   Box,
   Container,
@@ -38,6 +38,10 @@ const Menu = () => {
   
   // Performance monitoring
   const { recordMetric } = usePerformanceMonitor('Menu');
+  
+  // Refs for category sections
+  const categoryRefs = useRef({});
+  const observerRef = useRef(null);
 
   // Fetch categories and menu items from API
   useEffect(() => {
@@ -98,18 +102,77 @@ const Menu = () => {
     fetchMenuItems();
   }, []);
 
-  const filteredItems = useMemo(() => {
-    const startTime = performance.now();
-    const filtered = menuItems.filter(item => {
-      const matchesCategory = selectedCategory === 0 || item.category_name === categories[selectedCategory];
-      const matchesSearch = (item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           (item.description || '').toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesCategory && matchesSearch;
+  // Group menu items by category
+  const groupedItems = useMemo(() => {
+    const grouped = {};
+    categories.forEach(category => {
+      if (category === 'All') {
+        grouped[category] = menuItems.filter(item => 
+          (item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (item.description || '').toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      } else {
+        grouped[category] = menuItems.filter(item => 
+          item.category_name === category &&
+          ((item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (item.description || '').toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+      }
     });
-    const filterTime = performance.now() - startTime;
-    recordMetric('filter-operation', { duration: filterTime, resultCount: filtered.length, totalItems: menuItems.length });
-    return filtered;
-  }, [menuItems, selectedCategory, categories, searchTerm, recordMetric]);
+    return grouped;
+  }, [menuItems, categories, searchTerm]);
+
+  // Intersection Observer for automatic category switching
+  useEffect(() => {
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const categoryName = entry.target.getAttribute('data-category');
+            const categoryIndex = categories.findIndex(cat => cat === categoryName);
+            if (categoryIndex !== -1 && categoryIndex !== selectedCategory) {
+              setSelectedCategory(categoryIndex);
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '-20% 0px -70% 0px',
+        threshold: 0.1
+      }
+    );
+
+    // Observe all category sections
+    Object.values(categoryRefs.current).forEach(ref => {
+      if (ref) {
+        observerRef.current.observe(ref);
+      }
+    });
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [categories, selectedCategory]);
+
+  // Scroll to category when tab is clicked
+  const scrollToCategory = useCallback((categoryName) => {
+    const categoryElement = categoryRefs.current[categoryName];
+    if (categoryElement) {
+      const offset = 120; // Account for sticky header
+      const elementPosition = categoryElement.offsetTop - offset;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, []);
 
   const handleAddToCart = useCallback((item) => {
     addToCart(item);
@@ -122,7 +185,11 @@ const Menu = () => {
 
   const handleCategoryChange = useCallback((event, newValue) => {
     setSelectedCategory(newValue);
-  }, []);
+    const categoryName = categories[newValue];
+    if (categoryName) {
+      scrollToCategory(categoryName);
+    }
+  }, [categories, scrollToCategory]);
 
   const handleSearchChange = useCallback((event) => {
     setSearchTerm(event.target.value);
@@ -158,21 +225,20 @@ const Menu = () => {
   }
 
   return (
-    <Box sx={{ py: 4 }}>
-      <Container maxWidth="lg">
+    <Box>
+      <Container maxWidth="lg" sx={{ pt: 4, pb: 0 }}>
         {/* Header */}
         <Typography
           variant="h3"
           component="h1"
           textAlign="center"
-          gutterBottom
-          sx={{ mb: 4, fontWeight: 'bold', color: theme.palette.secondary.main }}
+          sx={{ mb: 2, fontWeight: 'bold', color: theme.palette.secondary.main }}
         >
           Our Menu
         </Typography>
 
         {/* Search */}
-        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
           <TextField
             placeholder="Search menu items..."
             value={searchTerm}
@@ -187,43 +253,44 @@ const Menu = () => {
             sx={{ maxWidth: 400, width: '100%' }}
           />
         </Box>
+      </Container>
 
-        {/* Category Tabs - Sticky */}
-        <Box 
-          sx={{ 
-            position: 'sticky',
-            top: 64, // Height of the header/navbar
-            zIndex: 100,
-            backgroundColor: 'white',
-            py: { xs: 1, sm: 2 },
-            mb: 4, 
-            display: 'flex', 
-            justifyContent: 'center',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            borderBottom: '1px solid rgba(0,0,0,0.1)',
-            overflow: 'hidden'
-          }}
-        >
+      {/* Category Tabs - Sticky Full Width */}
+      <Box 
+        sx={{ 
+          position: 'sticky',
+          top: 64, // Height of the header/navbar - will stick to main header when scrolling
+          zIndex: 100,
+          backgroundColor: 'white',
+          py: { xs: 1, sm: 2 },
+          mt: 0,
+          mb: 0, 
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          borderBottom: '1px solid rgba(0,0,0,0.1)',
+          overflow: 'hidden',
+          width: '100%'
+        }}
+      >
+        <Container maxWidth="lg">
           <Tabs
             value={selectedCategory}
             onChange={handleCategoryChange}
-            variant="centered"
+            variant="scrollable"
             scrollButtons="auto"
             allowScrollButtonsMobile
             sx={{
               width: '100%',
               maxWidth: '100%',
-              display: 'flex',
-              justifyContent: 'center',
               '& .MuiTabs-flexContainer': {
-                justifyContent: 'center'
+                justifyContent: { xs: 'flex-start', md: 'center' }
               },
               '& .MuiTab-root': {
                 fontWeight: 'bold',
                 fontSize: { xs: '0.75rem', sm: '0.875rem' },
                 minWidth: { xs: '80px', sm: '120px' },
                 px: { xs: 1, sm: 2 },
-                py: { xs: 1, sm: 1.5 }
+                py: { xs: 1, sm: 1.5 },
+                whiteSpace: 'nowrap'
               },
               '& .Mui-selected': {
                 color: theme.palette.primary.main,
@@ -232,6 +299,7 @@ const Menu = () => {
                 '&.Mui-disabled': {
                   opacity: 0.3,
                 },
+                color: theme.palette.primary.main
               },
               '& .MuiTabs-indicator': {
                 height: { xs: 2, sm: 3 }
@@ -242,63 +310,100 @@ const Menu = () => {
               <Tab key={category} label={category && typeof category === 'string' ? category : 'Unknown'} />
             ))}
           </Tabs>
-        </Box>
+        </Container>
+      </Box>
 
-        {/* Menu Items */}
-        <Box 
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            width: '100%',
-            margin: 0,
-            '& > *': {
-              boxSizing: 'border-box'
-            }
-          }}
-        >
-          {filteredItems.map((item) => (
-            <Box 
-              key={item.id}
-              sx={{
-                // Small Mobile: under 480px - 1 product per row
-                width: { xs: '100%' },
-                // Medium Mobile: 480px-767px - 1 product per row  
-                '@media (min-width: 480px) and (max-width: 767px)': {
-                  width: '100%'
-                },
-                // Small Tablet: 768px-991px - 2 products per row
-                '@media (min-width: 768px) and (max-width: 991px)': {
-                  width: '50%'
-                },
-                // Large Tablet/Laptop: 992px-1199px - 3 products per row
-                '@media (min-width: 992px) and (max-width: 1199px)': {
-                  width: '33.333%'
-                },
-                // Desktop: 1200px+ - 4-5 products per row (using 4 for consistency)
-                '@media (min-width: 1200px)': {
-                  width: '25%'
-                },
-                display: 'flex',
-                minWidth: 0,
-                padding: { xs: 1, sm: 1.5 },
-                '& > *': {
-                  width: '100%',
-                  minWidth: '100%',
-                  maxWidth: '100%',
-                  flex: 'none'
+      {/* Menu Items by Category */}
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        {categories.map((category) => {
+          const categoryItems = groupedItems[category] || [];
+          
+          // Skip empty categories when searching
+          if (categoryItems.length === 0) return null;
+          
+          return (
+            <Box
+              key={category}
+              ref={(el) => {
+                if (el) {
+                  categoryRefs.current[category] = el;
                 }
               }}
+              data-category={category}
+              sx={{ mb: 4 }}
             >
-              <ProductCard
-                item={item}
-                onAddToCart={handleAddToCart}
-                showAddToCart={true}
-              />
+              {/* Category Title */}
+              <Typography
+                variant="h4"
+                component="h2"
+                sx={{
+                  mb: 3,
+                  fontWeight: 'bold',
+                  color: theme.palette.primary.main,
+                  fontSize: { xs: '1.5rem', sm: '2rem' }
+                }}
+              >
+                {category}
+              </Typography>
+              
+              {/* Category Items */}
+              <Box 
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  width: '100%',
+                  margin: 0,
+                  '& > *': {
+                    boxSizing: 'border-box'
+                  }
+                }}
+              >
+                {categoryItems.map((item) => (
+                  <Box 
+                    key={item.id}
+                    sx={{
+                      // Small Mobile: under 480px - 1 product per row
+                      width: { xs: '100%' },
+                      // Medium Mobile: 480px-767px - 1 product per row  
+                      '@media (min-width: 480px) and (max-width: 767px)': {
+                        width: '100%'
+                      },
+                      // Small Tablet: 768px-991px - 2 products per row
+                      '@media (min-width: 768px) and (max-width: 991px)': {
+                        width: '50%'
+                      },
+                      // Large Tablet/Laptop: 992px-1199px - 3 products per row
+                      '@media (min-width: 992px) and (max-width: 1199px)': {
+                        width: '33.333%'
+                      },
+                      // Desktop: 1200px+ - 4-5 products per row (using 4 for consistency)
+                      '@media (min-width: 1200px)': {
+                        width: '25%'
+                      },
+                      display: 'flex',
+                      minWidth: 0,
+                      padding: { xs: 1, sm: 1.5 },
+                      '& > *': {
+                        width: '100%',
+                        minWidth: '100%',
+                        maxWidth: '100%',
+                        flex: 'none'
+                      }
+                    }}
+                  >
+                    <ProductCard
+                      item={item}
+                      onAddToCart={handleAddToCart}
+                      showAddToCart={true}
+                    />
+                  </Box>
+                ))}
+              </Box>
             </Box>
-          ))}
-        </Box>
+          );
+        })}
 
-        {filteredItems.length === 0 && (
+        {Object.values(groupedItems).every(items => items.length === 0) && (
           <Box sx={{ textAlign: 'center', py: 8 }}>
             <Typography variant="h6" color="text.secondary">
               No items found matching your search.

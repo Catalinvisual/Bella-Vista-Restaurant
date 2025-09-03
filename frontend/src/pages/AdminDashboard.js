@@ -755,7 +755,7 @@ const AdminDashboard = () => {
                     <TableCell>€{parseFloat(order.final_total || 0).toFixed(2)}</TableCell>
                     <TableCell>
                       <Chip
-                        label={order.status || 'Unknown'}
+                        label={(order.status && typeof order.status === 'string') ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Unknown'}
                         color={getStatusColor(order.status || 'unknown')}
                         size="small"
                       />
@@ -842,7 +842,7 @@ const AdminDashboard = () => {
                     </TableCell>
                     <TableCell>{item.category_name || item.category || 'Uncategorized'}</TableCell>
                     <TableCell>
-                      {item.label && typeof item.label === 'string' && item.label.trim() && (
+                      {item.label && typeof item.label === 'string' && item.label.trim() !== '' && (
                         <Chip
                           label={item.label.charAt(0).toUpperCase() + item.label.slice(1)}
                           size="small"
@@ -965,7 +965,7 @@ const AdminDashboard = () => {
                     <TableCell>{reservation.reservation_time}</TableCell>
                     <TableCell>
                       <Chip
-                        label={reservation.status || 'Unknown'}
+                        label={(reservation.status && typeof reservation.status === 'string') ? reservation.status.charAt(0).toUpperCase() + reservation.status.slice(1) : 'Unknown'}
                         color={
                           (reservation.status || '').toLowerCase() === 'confirmed' ? 'success' : 
                           (reservation.status || '').toLowerCase() === 'pending' ? 'warning' : 'error'
