@@ -22,8 +22,11 @@ const reservationRoutes = require('./routes/reservations');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Database connection - prioritize individual parameters over DATABASE_URL
-const pool = new Pool({
+// Database connection - prioritize DATABASE_URL over individual parameters
+const pool = process.env.DATABASE_URL ? new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+}) : new Pool({
   user: process.env.DB_USER || 'postgres',
   host: process.env.DB_HOST || 'localhost',
   database: process.env.DB_NAME || 'bella_db',
