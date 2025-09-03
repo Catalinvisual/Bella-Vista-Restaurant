@@ -587,10 +587,10 @@ router.get('/reservations', isAdmin, async (req, res) => {
     
     let query = `
       SELECT 
-        r.id, r.name, r.email, r.phone, r.guests, 
+        r.id, r.customer_name as name, r.customer_email as email, r.customer_phone as phone, r.party_size as guests, 
         r.reservation_date, r.reservation_time, r.special_requests, 
         r.status, r.created_at, r.updated_at,
-        u.full_name as customer_name
+        u.full_name as user_full_name
       FROM reservations r
       LEFT JOIN users u ON r.user_id = u.id
       WHERE 1=1
