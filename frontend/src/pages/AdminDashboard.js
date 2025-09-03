@@ -470,7 +470,7 @@ const AdminDashboard = () => {
   };
 
   const getStatusColor = (status) => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
       case 'pending':
         return 'warning';
       case 'confirmed':
@@ -756,7 +756,7 @@ const AdminDashboard = () => {
                     <TableCell>
                       <Chip
                         label={order.status || 'Unknown'}
-                        color={getStatusColor(order.status)}
+                        color={getStatusColor(order.status || 'unknown')}
                         size="small"
                       />
                     </TableCell>
@@ -862,17 +862,17 @@ const AdminDashboard = () => {
                     <TableCell>€{parseFloat(item.price).toFixed(2)}</TableCell>
                     <TableCell>
                       <Chip
-                        label={item.is_available ? 'Available' : 'Unavailable'}
-                        color={item.is_available ? 'success' : 'default'}
+                        label={item.is_available !== false ? 'Available' : 'Unavailable'}
+                        color={item.is_available !== false ? 'success' : 'default'}
                         size="small"
                       />
                     </TableCell>
                     <TableCell>
                       <Chip
-                        label={item.is_featured ? 'Featured' : 'Regular'}
-                        color={item.is_featured ? 'primary' : 'default'}
+                        label={item.is_featured === true ? 'Featured' : 'Regular'}
+                        color={item.is_featured === true ? 'primary' : 'default'}
                         size="small"
-                        variant={item.is_featured ? 'filled' : 'outlined'}
+                        variant={item.is_featured === true ? 'filled' : 'outlined'}
                       />
                     </TableCell>
                     <TableCell sx={{ position: 'sticky', right: 0, backgroundColor: 'background.paper', zIndex: 1 }}>
@@ -966,7 +966,10 @@ const AdminDashboard = () => {
                     <TableCell>
                       <Chip
                         label={reservation.status || 'Unknown'}
-                        color={reservation.status === 'confirmed' ? 'success' : reservation.status === 'pending' ? 'warning' : 'error'}
+                        color={
+                          (reservation.status || '').toLowerCase() === 'confirmed' ? 'success' : 
+                          (reservation.status || '').toLowerCase() === 'pending' ? 'warning' : 'error'
+                        }
                         size="small"
                       />
                     </TableCell>
