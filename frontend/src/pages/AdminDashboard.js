@@ -755,7 +755,7 @@ const AdminDashboard = () => {
                     <TableCell>€{parseFloat(order.final_total || 0).toFixed(2)}</TableCell>
                     <TableCell>
                       <Chip
-                        label={order.status}
+                        label={order.status || 'Unknown'}
                         color={getStatusColor(order.status)}
                         size="small"
                       />
@@ -842,7 +842,7 @@ const AdminDashboard = () => {
                     </TableCell>
                     <TableCell>{item.category_name || item.category}</TableCell>
                     <TableCell>
-                      {item.label && (
+                      {item.label && typeof item.label === 'string' && item.label.trim() && (
                         <Chip
                           label={item.label.charAt(0).toUpperCase() + item.label.slice(1)}
                           size="small"
@@ -965,7 +965,7 @@ const AdminDashboard = () => {
                     <TableCell>{reservation.reservation_time}</TableCell>
                     <TableCell>
                       <Chip
-                        label={reservation.status}
+                        label={reservation.status || 'Unknown'}
                         color={reservation.status === 'confirmed' ? 'success' : reservation.status === 'pending' ? 'warning' : 'error'}
                         size="small"
                       />

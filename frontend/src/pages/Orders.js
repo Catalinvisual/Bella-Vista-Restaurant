@@ -160,7 +160,7 @@ const Orders = () => {
                   </Box>
                   <Box sx={{ textAlign: 'right' }}>
                     <Chip
-                      label={order.status}
+                      label={order.status || 'Unknown'}
                       color={getStatusColor(order.status)}
                       sx={{ mb: 1 }}
                     />

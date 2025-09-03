@@ -65,7 +65,9 @@ const Menu = () => {
         
         // Fetch categories
         const categoriesResponse = await axios.get('/menu/categories');
-        const fetchedCategories = ['All', ...categoriesResponse.data.categories.map(cat => cat.name)];
+        const fetchedCategories = ['All', ...categoriesResponse.data.categories
+          .filter(cat => cat.name && typeof cat.name === 'string')
+          .map(cat => cat.name)];
         
         // Fetch menu items
         const itemsResponse = await axios.get('/menu/items');

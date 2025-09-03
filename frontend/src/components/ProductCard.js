@@ -129,7 +129,7 @@ const ProductCard = memo(({ item, onAddToCart }) => {
             onError={handleImageError}
           />
         </Box>
-        {item.label && (
+        {item.label && typeof item.label === 'string' && item.label.trim() && (
           <Chip
             label={item.label}
             size="small"
