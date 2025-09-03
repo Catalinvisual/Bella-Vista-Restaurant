@@ -120,34 +120,46 @@ Connect to production database:
 psql postgresql://bella_user:W6KwW991u2Pt8wfyrDsx6ZbpJU5LlxyM@dpg-d2q1ifmr433s73dq11tg-a.oregon-postgres.render.com/bella_vista_db_dwub
 ```
 
-## 🚨 CRITICAL: Backend Service Not Running on Render
+## 🚨 CRITICAL: Backend Service Issues on Render - PARTIALLY RESOLVED
 
-**ISSUE IDENTIFIED**: The backend service on Render is not responding correctly:
-- API calls to `https://bella-vista-restaurant-1.onrender.com/api/health` return HTML instead of JSON
-- This indicates the backend service is either not running or misconfigured
+**ISSUE IDENTIFIED**: Multiple backend service issues identified:
+- API calls to admin endpoints were failing with 500 errors
+- Root cause: Admin users endpoint was trying to SELECT a 'username' column that doesn't exist
+- Production database schema only has 'full_name', not 'username'
 - Local backend works perfectly (confirmed)
+- **NEW ISSUE**: API endpoints returning HTML instead of JSON, indicating routing/deployment issue
+
+### Root Cause and Fix:
+
+**Problem**: Database schema mismatch in admin routes
+- The admin users endpoint was querying for 'username' column
+- Production database users table only has: id, full_name, email, phone_number, role, etc.
+- This caused 500 Internal Server Error responses
+
+**Solution Applied**:
+- Updated `backend/routes/admin.js` to remove 'username' from SELECT queries
+- Now uses only existing columns from the actual database schema
+- Committed and pushed fix to trigger automatic Render deployment
+
+### Issues Status:
+
+1. **✅ Database Schema Mismatch**: Fixed column references in admin routes
+2. **❌ Backend Service Routing**: API endpoints still returning HTML instead of JSON
+3. **❓ Service Configuration**: Needs verification on Render dashboard
+4. **✅ Code Fix Deployed**: Database schema fix pushed to GitHub
+
+### Current Status:
+- Database schema fix has been applied and deployed
+- API endpoints still return HTML instead of JSON responses
+- This indicates the backend service on Render may not be properly configured
+- Manual intervention required on Render dashboard
 
 ### Immediate Actions Required:
-
-1. **Check Render Backend Service Status**:
-   - Go to [Render Dashboard](https://dashboard.render.com)
-   - Find your backend service (`bella-vista-restaurant-1`)
-   - Check if the service is "Live" or has deployment errors
-   - Review the deployment logs for errors
-
-2. **Verify Backend Service Configuration**:
-   - Ensure the service is set to "Web Service" (not Static Site)
-   - Build Command: `npm install`
-   - Start Command: `npm start`
-   - Environment: `Node`
-
-3. **Check Environment Variables on Render**:
-   - Verify all variables from `.env.production` are set in Render dashboard
-   - Especially: `DATABASE_URL`, `PORT`, `NODE_ENV=production`
-
-4. **Manual Redeploy**:
-   - Trigger a manual deploy from the Render dashboard
-   - Monitor the build and deploy logs carefully
+1. **Check Render Dashboard**: Verify backend service status and configuration
+2. **Service Type**: Ensure it's set to "Web Service" not "Static Site"
+3. **Build/Start Commands**: Verify correct commands for backend
+4. **Environment Variables**: Confirm all production variables are set
+5. **Manual Redeploy**: Trigger fresh deployment if needed
 
 ## 🚀 Next Steps
 
