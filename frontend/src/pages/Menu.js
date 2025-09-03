@@ -102,8 +102,8 @@ const Menu = () => {
     const startTime = performance.now();
     const filtered = menuItems.filter(item => {
       const matchesCategory = selectedCategory === 0 || item.category_name === categories[selectedCategory];
-      const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           item.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = (item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           (item.description || '').toLowerCase().includes(searchTerm.toLowerCase());
       return matchesCategory && matchesSearch;
     });
     const filterTime = performance.now() - startTime;
@@ -239,7 +239,7 @@ const Menu = () => {
             }}
           >
             {categories.map((category, index) => (
-              <Tab key={category} label={category} />
+              <Tab key={category} label={category && typeof category === 'string' ? category : 'Unknown'} />
             ))}
           </Tabs>
         </Box>

@@ -32,12 +32,12 @@ const CustomTimePicker = ({ value, onChange, label, error, helperText }) => {
 
   return (
     <FormControl fullWidth error={error} variant="outlined">
-      <InputLabel shrink>{label}</InputLabel>
+      <InputLabel shrink>{label || 'Select Time'}</InputLabel>
       <Select
         value={value || ''}
         onChange={(e) => onChange(e.target.value)}
         displayEmpty
-        label={label}
+        label={label || 'Select Time'}
         MenuProps={{
           PaperProps: {
             style: {

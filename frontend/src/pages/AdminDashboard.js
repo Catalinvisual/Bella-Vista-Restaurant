@@ -840,7 +840,7 @@ const AdminDashboard = () => {
                         {item.description?.substring(0, 50)}...
                       </Typography>
                     </TableCell>
-                    <TableCell>{item.category_name || item.category}</TableCell>
+                    <TableCell>{item.category_name || item.category || 'Uncategorized'}</TableCell>
                     <TableCell>
                       {item.label && typeof item.label === 'string' && item.label.trim() && (
                         <Chip
