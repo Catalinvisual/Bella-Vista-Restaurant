@@ -90,6 +90,8 @@ const AdminDashboard = () => {
     totalReservations: 0,
   });
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [orderFilter, setOrderFilter] = useState('all'); // 'all', '30days', '7days', 'today'
   const [menuItems, setMenuItems] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [reservations, setReservations] = useState([]);
@@ -131,9 +133,12 @@ const AdminDashboard = () => {
         setStats(statsResponse.data);
         
         // Fetch recent orders
-         const ordersResponse = await axios.get('/admin/orders?limit=10');
+         const ordersResponse = await axios.get('/admin/orders');
          const ordersData = ordersResponse.data.orders || [];
-         setOrders(ordersData.sort((a, b) => b.id - a.id));
+         const sortedOrders = ordersData.sort((a, b) => b.id - a.id);
+         setOrders(sortedOrders);
+         // Initialize filtered orders with all orders
+         setFilteredOrders(sortedOrders);
         
         // Fetch menu items
         const menuResponse = await axios.get('/menu/items');
@@ -265,13 +270,14 @@ const AdminDashboard = () => {
       });
       
       // Update the order in the local state
-      setOrders(prevOrders => 
-        prevOrders.map(order => 
-          order.id === selectedItem.id 
-            ? { ...order, status: orderStatus }
-            : order
-        )
+      const updatedOrders = orders.map(order => 
+        order.id === selectedItem.id 
+          ? { ...order, status: orderStatus }
+          : order
       );
+      setOrders(updatedOrders);
+      // Also update filtered orders
+      filterOrders(orderFilter, updatedOrders);
       
       setSnackbar({
         open: true,
@@ -420,6 +426,47 @@ const AdminDashboard = () => {
 
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
+  };
+
+  // Filter orders based on selected time period
+  const filterOrders = (filter, ordersList = orders) => {
+    const now = new Date();
+    let filtered = [];
+
+    switch (filter) {
+      case 'today':
+        filtered = ordersList.filter(order => {
+          const orderDate = new Date(order.created_at);
+          return orderDate.toDateString() === now.toDateString();
+        });
+        break;
+      case '7days':
+        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        filtered = ordersList.filter(order => {
+          const orderDate = new Date(order.created_at);
+          return orderDate >= sevenDaysAgo;
+        });
+        break;
+      case '30days':
+        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        filtered = ordersList.filter(order => {
+          const orderDate = new Date(order.created_at);
+          return orderDate >= thirtyDaysAgo;
+        });
+        break;
+      case 'all':
+      default:
+        filtered = ordersList;
+        break;
+    }
+
+    setFilteredOrders(filtered);
+  };
+
+  // Handle filter change
+  const handleFilterChange = (filter) => {
+    setOrderFilter(filter);
+    filterOrders(filter);
   };
 
   const getStatusColor = (status) => {
@@ -595,17 +642,81 @@ const AdminDashboard = () => {
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center', 
-            mb: { xs: 1.5, sm: 2 },
+            mb: { xs: 2, sm: 3 },
             flexDirection: { xs: 'column', sm: 'row' },
-            gap: { xs: 1, sm: 0 }
+            gap: { xs: 2, sm: 0 }
           }}>
-            <Typography variant="h5" sx={{ 
+            <Typography variant="h4" sx={{ 
               fontWeight: 'bold',
-              fontSize: { xs: '1.25rem', sm: '1.5rem' }
+              fontSize: { xs: '1.5rem', sm: '1.75rem' },
+              color: theme.palette.primary.main
             }}>
-              Recent Orders
+              Order Management
             </Typography>
           </Box>
+          
+          {/* Filter Buttons */}
+          <Box sx={{ 
+            display: 'flex', 
+            gap: { xs: 1, sm: 2 }, 
+            mb: { xs: 2, sm: 3 },
+            flexWrap: 'wrap',
+            justifyContent: { xs: 'center', sm: 'flex-start' }
+          }}>
+            <Button
+              variant={orderFilter === 'all' ? 'contained' : 'outlined'}
+              onClick={() => handleFilterChange('all')}
+              sx={{ 
+                fontWeight: 'bold',
+                minWidth: { xs: '80px', sm: '100px' },
+                fontSize: { xs: '0.75rem', sm: '0.875rem' }
+              }}
+            >
+              All Orders
+            </Button>
+            <Button
+              variant={orderFilter === '30days' ? 'contained' : 'outlined'}
+              onClick={() => handleFilterChange('30days')}
+              sx={{ 
+                fontWeight: 'bold',
+                minWidth: { xs: '80px', sm: '100px' },
+                fontSize: { xs: '0.75rem', sm: '0.875rem' }
+              }}
+            >
+              Last 30 Days
+            </Button>
+            <Button
+              variant={orderFilter === '7days' ? 'contained' : 'outlined'}
+              onClick={() => handleFilterChange('7days')}
+              sx={{ 
+                fontWeight: 'bold',
+                minWidth: { xs: '80px', sm: '100px' },
+                fontSize: { xs: '0.75rem', sm: '0.875rem' }
+              }}
+            >
+              Last 7 Days
+            </Button>
+            <Button
+              variant={orderFilter === 'today' ? 'contained' : 'outlined'}
+              onClick={() => handleFilterChange('today')}
+              sx={{ 
+                fontWeight: 'bold',
+                minWidth: { xs: '80px', sm: '100px' },
+                fontSize: { xs: '0.75rem', sm: '0.875rem' }
+              }}
+            >
+              Today
+            </Button>
+          </Box>
+          
+          {/* Orders Count */}
+          <Typography variant="body1" sx={{ 
+            mb: 2, 
+            color: theme.palette.text.secondary,
+            fontWeight: 'medium'
+          }}>
+            Showing {filteredOrders.length} orders
+          </Typography>
           <TableContainer sx={{ overflowX: 'auto' }}>
             <Table sx={{ minWidth: { xs: 800, md: 650 } }}>
               <TableHead>
@@ -614,7 +725,7 @@ const AdminDashboard = () => {
                     <Checkbox
                       checked={selectAllOrders}
                       onChange={handleSelectAllOrders}
-                      indeterminate={selectedOrders.length > 0 && selectedOrders.length < orders.length}
+                      indeterminate={selectedOrders.length > 0 && selectedOrders.length < filteredOrders.length}
                     />
                   </TableCell>
                   <TableCell>Order ID</TableCell>
@@ -628,7 +739,7 @@ const AdminDashboard = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orders.map((order) => (
+                {filteredOrders.map((order) => (
                   <TableRow key={order.id} selected={selectedOrders.includes(order.id)}>
                     <TableCell padding="checkbox">
                       <Checkbox
