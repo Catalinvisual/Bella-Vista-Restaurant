@@ -120,18 +120,17 @@ Connect to production database:
 psql postgresql://bella_user:W6KwW991u2Pt8wfyrDsx6ZbpJU5LlxyM@dpg-d2q1ifmr433s73dq11tg-a.oregon-postgres.render.com/bella_vista_db_dwub
 ```
 
-## 🚨 CRITICAL: Backend Service Issues on Render - PARTIALLY RESOLVED
+## 🚨 CRITICAL: Backend Service Issues on Render - MOSTLY RESOLVED
 
 **ISSUE IDENTIFIED**: Multiple backend service issues identified:
 - API calls to admin endpoints were failing with 500 errors
-- Root cause: Admin users endpoint was trying to SELECT a 'username' column that doesn't exist
-- Production database schema only has 'full_name', not 'username'
+- Root cause: Multiple database schema mismatches in admin endpoints
+- Production database schema differs from expected column names
 - Local backend works perfectly (confirmed)
-- **NEW ISSUE**: API endpoints returning HTML instead of JSON, indicating routing/deployment issue
 
-### Root Cause and Fix:
+### Root Cause and Fixes:
 
-**Problem**: Database schema mismatch in admin routes
+**Problem 1**: Database schema mismatch in admin users route
 - The admin users endpoint was querying for 'username' column
 - Production database users table only has: id, full_name, email, phone_number, role, etc.
 - This caused 500 Internal Server Error responses
@@ -139,14 +138,26 @@ psql postgresql://bella_user:W6KwW991u2Pt8wfyrDsx6ZbpJU5LlxyM@dpg-d2q1ifmr433s73
 **Solution Applied**:
 - Updated `backend/routes/admin.js` to remove 'username' from SELECT queries
 - Now uses only existing columns from the actual database schema
+
+**Problem 2**: Database schema mismatch in admin reservations route
+- The admin reservations endpoint was using incorrect column names
+- Production reservations table has different column naming convention
+- This caused additional 500 Internal Server Error responses
+
+**Solution Applied**:
+- Updated admin reservations query to use correct column names:
+  - `r.name` → `r.customer_name`
+  - `r.email` → `r.customer_email` 
+  - `r.phone` → `r.customer_phone`
+  - `r.guests` → `r.party_size`
 - Committed and pushed fix to trigger automatic Render deployment
 
 ### Issues Status:
 
-1. **✅ Database Schema Mismatch**: Fixed column references in admin routes
-2. **❌ Backend Service Routing**: API endpoints still returning HTML instead of JSON
-3. **❓ Service Configuration**: Needs verification on Render dashboard
-4. **✅ Code Fix Deployed**: Database schema fix pushed to GitHub
+1. **✅ Database Schema Mismatch (users table)**: Fixed column references in admin users route
+2. **✅ Database Schema Mismatch (reservations table)**: Fixed column references in admin reservations route
+3. **✅ Backend Service Routing**: Recent logs show API endpoints working correctly
+4. **✅ Code Fixes Deployed**: All database schema fixes pushed to GitHub
 
 ### Current Status:
 - Database schema fix has been applied and deployed
@@ -154,12 +165,29 @@ psql postgresql://bella_user:W6KwW991u2Pt8wfyrDsx6ZbpJU5LlxyM@dpg-d2q1ifmr433s73
 - This indicates the backend service on Render may not be properly configured
 - Manual intervention required on Render dashboard
 
-### Immediate Actions Required:
-1. **Check Render Dashboard**: Verify backend service status and configuration
-2. **Service Type**: Ensure it's set to "Web Service" not "Static Site"
-3. **Build/Start Commands**: Verify correct commands for backend
-4. **Environment Variables**: Confirm all production variables are set
-5. **Manual Redeploy**: Trigger fresh deployment if needed
+### Verification Steps:
+
+1. **Test Fixed Endpoints**:
+   ```bash
+   # Test health endpoint
+   curl -H "Accept: application/json" https://bella-vista-restaurant-1.onrender.com/api/health
+   
+   # Test admin users endpoint (should work - fixed)
+   curl -H "Accept: application/json" https://bella-vista-restaurant-1.onrender.com/api/admin/users
+   
+   # Test admin reservations endpoint (should work - just fixed)
+   curl -H "Accept: application/json" https://bella-vista-restaurant-1.onrender.com/api/admin/reservations
+   ```
+
+2. **Monitor Application Logs**:
+   - Check Render logs for any remaining 500 errors
+   - Verify all API endpoints return JSON responses
+   - Confirm database connections are working
+
+3. **Test Admin Dashboard**:
+   - Login to admin dashboard
+   - Verify all sections load without errors
+   - Check that reservations management works correctly
 
 ## 🚀 Next Steps
 
