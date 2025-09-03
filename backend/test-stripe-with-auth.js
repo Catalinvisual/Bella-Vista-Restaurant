@@ -1,4 +1,4 @@
-const http = require('http');
+const https = require('https');
 
 // First, let's try to login with a test user
 const loginData = JSON.stringify({
@@ -7,8 +7,8 @@ const loginData = JSON.stringify({
 });
 
 const loginOptions = {
-  hostname: 'localhost',
-  port: 5000,
+  hostname: 'bella-vista-restaurant.onrender.com',
+  port: 443,
   path: '/api/auth/login',
   method: 'POST',
   headers: {
@@ -19,7 +19,7 @@ const loginOptions = {
 
 console.log('Attempting to login with test user...');
 
-const loginReq = http.request(loginOptions, (res) => {
+const loginReq = https.request(loginOptions, (res) => {
   console.log(`Login Status: ${res.statusCode}`);
   
   let loginResponse = '';
@@ -64,8 +64,8 @@ function registerTestUser() {
   });
 
   const registerOptions = {
-    hostname: 'localhost',
-    port: 5000,
+    hostname: 'bella-vista-restaurant.onrender.com',
+    port: 443,
     path: '/api/auth/register',
     method: 'POST',
     headers: {
@@ -76,7 +76,7 @@ function registerTestUser() {
 
   console.log('Registering test user...');
 
-  const registerReq = http.request(registerOptions, (res) => {
+  const registerReq = https.request(registerOptions, (res) => {
     console.log(`Register Status: ${res.statusCode}`);
     
     let registerResponse = '';
@@ -130,8 +130,8 @@ function testStripePayment(token) {
   });
 
   const paymentOptions = {
-    hostname: 'localhost',
-    port: 5000,
+    hostname: 'bella-vista-restaurant.onrender.com',
+    port: 443,
     path: '/api/payments/confirm-payment',
     method: 'POST',
     headers: {
@@ -143,7 +143,7 @@ function testStripePayment(token) {
 
   console.log('Testing Stripe payment with authentication...');
 
-  const paymentReq = http.request(paymentOptions, (res) => {
+  const paymentReq = https.request(paymentOptions, (res) => {
     console.log(`Payment Status: ${res.statusCode}`);
     
     let paymentResponse = '';
