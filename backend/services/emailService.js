@@ -155,6 +155,168 @@ Bella Vista Restaurant Team
   }
 };
 
+// Function to send password reset email
+const sendPasswordResetEmail = async (email, resetToken, userName) => {
+  try {
+    console.log('Sending password reset email to:', email);
+    
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    
+    const emailContent = `
+Dear ${userName},
+
+We received a request to reset your password for your Bella Vista Restaurant account.
+
+To reset your password, please click the link below:
+${resetUrl}
+
+This link will expire in 1 hour for security reasons.
+
+If you didn't request a password reset, please ignore this email. Your password will remain unchanged.
+
+Best regards,
+Bella Vista Restaurant Team
+    `;
+
+    const mailOptions = {
+      from: `"Bella Vista Restaurant" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Password Reset Request - Bella Vista Restaurant',
+      text: emailContent,
+      html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #333; text-align: center;">Password Reset Request</h2>
+        <p>Dear ${userName},</p>
+        <p>We received a request to reset your password for your Bella Vista Restaurant account.</p>
+        <p>To reset your password, please click the button below:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${resetUrl}" style="background-color: #d32f2f; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+        </div>
+        <p>Or copy and paste this link into your browser:</p>
+        <p style="word-break: break-all; color: #666;">${resetUrl}</p>
+        <p><strong>This link will expire in 1 hour for security reasons.</strong></p>
+        <p>If you didn't request a password reset, please ignore this email. Your password will remain unchanged.</p>
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+        <p style="color: #666; font-size: 12px;">Best regards,<br>Bella Vista Restaurant Team</p>
+      </div>`,
+      headers: {
+        'X-Priority': '1',
+        'X-MSMail-Priority': 'High',
+        'Importance': 'high'
+      }
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Password reset email sent:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+    throw error;
+  }
+};
+
+// Function to send order status change notification
+const sendOrderStatusUpdate = async (orderData, newStatus) => {
+  try {
+    console.log('Sending order status update email for order:', orderData.id);
+    console.log('New status:', newStatus);
+    
+    const {
+      customer_email,
+      customer_name,
+      id: orderId,
+      final_total
+    } = orderData;
+    
+    // Status-specific messages
+    const statusMessages = {
+      confirmed: {
+        subject: 'Order Confirmed',
+        message: 'Great news! Your order has been confirmed and we are preparing it for you.',
+        color: '#4caf50'
+      },
+      preparing: {
+        subject: 'Order Being Prepared',
+        message: 'Your order is now being prepared by our kitchen team.',
+        color: '#ff9800'
+      },
+      ready: {
+        subject: 'Order Ready',
+        message: 'Your order is ready! Please come to pick it up or our delivery team will be with you shortly.',
+        color: '#2196f3'
+      },
+      delivered: {
+        subject: 'Order Delivered',
+        message: 'Your order has been successfully delivered. We hope you enjoy your meal!',
+        color: '#4caf50'
+      },
+      cancelled: {
+        subject: 'Order Cancelled',
+        message: 'Unfortunately, your order has been cancelled. If you have any questions, please contact us.',
+        color: '#f44336'
+      }
+    };
+    
+    const statusInfo = statusMessages[newStatus] || {
+      subject: 'Order Status Update',
+      message: `Your order status has been updated to: ${newStatus}`,
+      color: '#666'
+    };
+    
+    const total = parseFloat(final_total || 0);
+    
+    const emailContent = `
+Dear ${customer_name},
+
+${statusInfo.message}
+
+Order Details:
+Order ID: ${orderId}
+Total Amount: €${total.toFixed(2)}
+Status: ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}
+
+Thank you for choosing Bella Vista Restaurant!
+
+Best regards,
+Bella Vista Restaurant Team
+    `;
+
+    const mailOptions = {
+      from: `"Bella Vista Restaurant" <${process.env.EMAIL_USER}>`,
+      to: customer_email,
+      subject: `${statusInfo.subject} - Order #${orderId}`,
+      text: emailContent,
+      html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: ${statusInfo.color}; text-align: center;">${statusInfo.subject}</h2>
+        <p>Dear ${customer_name},</p>
+        <p>${statusInfo.message}</p>
+        <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: #333;">Order Details</h3>
+          <p><strong>Order ID:</strong> ${orderId}</p>
+          <p><strong>Total Amount:</strong> €${total.toFixed(2)}</p>
+          <p><strong>Status:</strong> <span style="color: ${statusInfo.color}; font-weight: bold;">${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span></p>
+        </div>
+        <p>Thank you for choosing Bella Vista Restaurant!</p>
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+        <p style="color: #666; font-size: 12px;">Best regards,<br>Bella Vista Restaurant Team</p>
+      </div>`,
+      headers: {
+        'X-Priority': '1',
+        'X-MSMail-Priority': 'High',
+        'Importance': 'high'
+      }
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Order status update email sent:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Error sending order status update email:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   sendOrderConfirmation,
+  sendPasswordResetEmail,
+  sendOrderStatusUpdate,
 };

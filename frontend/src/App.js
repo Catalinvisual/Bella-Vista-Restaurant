@@ -20,6 +20,7 @@ const Cart = React.lazy(() => import('./pages/Cart'));
 const Login = React.lazy(() => import('./pages/Login'));
 const Register = React.lazy(() => import('./pages/Register'));
 const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const Orders = React.lazy(() => import('./pages/Orders'));
 const Reservations = React.lazy(() => import('./pages/Reservations'));
@@ -101,6 +102,7 @@ function App() {
                       <Route path="/login" element={<Login />} />
                       <Route path="/register" element={<Register />} />
                       <Route path="/forgot-password" element={<ForgotPassword />} />
+                      <Route path="/reset-password" element={<ResetPassword />} />
                       <Route path="/admin" element={<AdminDashboard />} />
                       <Route path="/orders" element={<Orders />} />
                       <Route path="/reservations" element={<Reservations />} />

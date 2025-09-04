@@ -1,6 +1,6 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { sendOrderConfirmation } = require('../services/emailService');
+const { sendOrderConfirmation, sendOrderStatusUpdate } = require('../services/emailService');
 const router = express.Router();
 
 // Middleware to check if user is authenticated via JWT
@@ -477,17 +477,41 @@ router.patch('/:id/status', isAdmin, [
     const { id } = req.params;
     const { status } = req.body;
 
-    const query = `
+    // First get the order with customer details for email notification
+    const orderQuery = `
+      SELECT o.*, u.full_name as customer_name, u.email as customer_email
+      FROM orders o
+      LEFT JOIN users u ON o.user_id = u.id
+      WHERE o.id = $1
+    `;
+    
+    const orderResult = await pool.query(orderQuery, [id]);
+    
+    if (orderResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    
+    const orderData = orderResult.rows[0];
+    
+    // Update the order status
+    const updateQuery = `
       UPDATE orders 
       SET status = $1, updated_at = CURRENT_TIMESTAMP
       WHERE id = $2
       RETURNING *
     `;
 
-    const result = await pool.query(query, [status, id]);
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Order not found' });
+    const result = await pool.query(updateQuery, [status, id]);
+    
+    // Send email notification if customer email exists
+    if (orderData.customer_email) {
+      try {
+        await sendOrderStatusUpdate(orderData, status);
+        console.log(`Order status update email sent for order ${id}`);
+      } catch (emailError) {
+        console.error('Failed to send order status update email:', emailError);
+        // Don't fail the request if email fails, but log the error
+      }
     }
 
     res.json({

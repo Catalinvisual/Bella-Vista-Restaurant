@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
+const { sendPasswordResetEmail } = require('../services/emailService');
 const router = express.Router();
 
 // Middleware to check if user is authenticated via JWT
@@ -245,14 +246,17 @@ router.post('/forgot-password', [
     `;
     await pool.query(updateQuery, [resetToken, resetTokenExpiry, user.id]);
 
-    // In a real application, you would send an email here
-    // For now, we'll just return the token (remove this in production)
-    console.log(`Password reset token for ${email}: ${resetToken}`);
+    // Send password reset email
+    try {
+      await sendPasswordResetEmail(email, resetToken, user.full_name);
+      console.log(`Password reset email sent to ${email}`);
+    } catch (emailError) {
+      console.error('Failed to send password reset email:', emailError);
+      // Don't fail the request if email fails, but log the error
+    }
 
     res.json({ 
-      message: 'If the email exists, a reset link has been sent',
-      // Remove this in production:
-      resetToken: resetToken
+      message: 'If the email exists, a reset link has been sent'
     });
   } catch (error) {
     console.error('Forgot password error:', error);
