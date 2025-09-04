@@ -796,7 +796,7 @@ const AdminDashboard = () => {
               variant="contained"
               startIcon={<Add />}
               onClick={() => handleOpenDialog('menu')}
-              size={{ xs: 'small', sm: 'medium' }}
+              size="small"
               sx={{
                 fontSize: { xs: '0.75rem', sm: '0.875rem' },
                 px: { xs: 2, sm: 3 }
