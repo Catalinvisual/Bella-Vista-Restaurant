@@ -92,7 +92,7 @@ router.post('/', isAuthenticated, [
     // Insert reservation into database
     const insertQuery = `
       INSERT INTO reservations (
-        user_id, name, email, phone, guests, 
+        user_id, guest_name, guest_email, guest_phone, party_size, 
         reservation_date, reservation_time, special_requests, status
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *
@@ -132,7 +132,7 @@ router.get('/my-reservations', isAuthenticated, async (req, res) => {
 
     const query = `
       SELECT 
-        id, name, email, phone, guests, reservation_date, 
+        id, guest_name as name, guest_email as email, guest_phone as phone, party_size as guests, reservation_date, 
         reservation_time, special_requests, status, created_at
       FROM reservations
       WHERE user_id = $1
@@ -166,7 +166,7 @@ router.get('/', isAdmin, async (req, res) => {
 
     let query = `
       SELECT 
-        r.id, r.name, r.email, r.phone, r.guests, 
+        r.id, r.guest_name as name, r.guest_email as email, r.guest_phone as phone, r.party_size as guests, 
         r.reservation_date, r.reservation_time, r.special_requests, 
         r.status, r.created_at, r.updated_at,
         u.full_name as customer_name
