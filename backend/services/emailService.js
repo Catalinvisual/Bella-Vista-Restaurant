@@ -224,7 +224,8 @@ const sendOrderStatusUpdate = async (orderData, newStatus) => {
       customer_email,
       customer_name,
       id: orderId,
-      final_total
+      final_total,
+      order_type
     } = orderData;
     
     // Status-specific messages
@@ -241,7 +242,9 @@ const sendOrderStatusUpdate = async (orderData, newStatus) => {
       },
       ready: {
         subject: 'Order Ready',
-        message: 'Your order is ready! Please come to pick it up or our delivery team will be with you shortly.',
+        message: order_type === 'delivery' 
+          ? 'Your order is ready and will be delivered soon.'
+          : 'Your order is ready and you can pick it up.',
         color: '#2196f3'
       },
       delivered: {
