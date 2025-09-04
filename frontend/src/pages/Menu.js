@@ -12,6 +12,7 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  alpha,
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import { useCart } from '../context/CartContext';
@@ -160,7 +161,7 @@ const Menu = () => {
       },
       {
         root: null,
-        rootMargin: '-50% 0px -40% 0px',
+        rootMargin: '-20% 0px -70% 0px',
         threshold: 0.1
       }
     );
@@ -245,27 +246,55 @@ const Menu = () => {
 
   return (
     <Box>
-      {/* Category Header - Attached to main header */}
+      {/* Category Tabs - Sticky Full Width - Positioned above Our Menu title */}
       <Box 
         sx={{ 
           position: 'sticky',
-          top: 64, // Height of the main header
-          zIndex: 101,
-          backgroundColor: theme.palette.primary.main,
-          color: 'white',
-          py: 1,
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          top: 64, // Height of main header only
+          zIndex: 100,
+          backgroundColor: 'white',
+          py: { xs: 1, sm: 2 },
+          mt: 0,
+          mb: 0, 
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          borderBottom: '1px solid rgba(0,0,0,0.1)',
+          overflow: 'hidden',
+          width: '100%'
         }}
       >
         <Container maxWidth="lg">
-          <Typography
-            variant="h6"
-            component="div"
-            textAlign="center"
-            sx={{ fontWeight: 'bold' }}
+          <Tabs
+            value={selectedCategory === 0 ? activeCategory : selectedCategory}
+            onChange={handleCategoryChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+            sx={{
+              width: '100%',
+              maxWidth: '100%',
+              '& .MuiTabs-flexContainer': {
+                justifyContent: { xs: 'flex-start', md: 'center' }
+              },
+              '& .MuiTab-root': {
+                minWidth: { xs: 'auto', sm: 120 },
+                fontSize: { xs: '0.875rem', sm: '1rem' },
+                fontWeight: 'bold',
+                color: theme.palette.text.primary,
+                '&.Mui-selected': {
+                  color: theme.palette.primary.main,
+                  backgroundColor: alpha(theme.palette.primary.main, 0.1)
+                }
+              },
+              '& .MuiTabs-indicator': {
+                backgroundColor: theme.palette.primary.main,
+                height: 3
+              }
+            }}
           >
-            {selectedCategory === 0 ? 'All Categories' : categories[selectedCategory] || 'Menu'}
-          </Typography>
+            {categories.map((category, index) => (
+              <Tab key={index} label={category} />
+            ))}
+          </Tabs>
         </Container>
       </Box>
 
@@ -298,63 +327,7 @@ const Menu = () => {
         </Box>
       </Container>
 
-      {/* Category Tabs - Sticky Full Width */}
-      <Box 
-        sx={{ 
-          position: 'sticky',
-          top: 104, // Height of main header (64px) + category header (40px)
-          zIndex: 100,
-          backgroundColor: 'white',
-          py: { xs: 1, sm: 2 },
-          mt: 0,
-          mb: 0, 
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          borderBottom: '1px solid rgba(0,0,0,0.1)',
-          overflow: 'hidden',
-          width: '100%'
-        }}
-      >
-        <Container maxWidth="lg">
-          <Tabs
-            value={selectedCategory === 0 ? activeCategory : selectedCategory}
-            onChange={handleCategoryChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            allowScrollButtonsMobile
-            sx={{
-              width: '100%',
-              maxWidth: '100%',
-              '& .MuiTabs-flexContainer': {
-                justifyContent: { xs: 'flex-start', md: 'center' }
-              },
-              '& .MuiTab-root': {
-                fontWeight: 'bold',
-                fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                minWidth: { xs: '80px', sm: '120px' },
-                px: { xs: 1, sm: 2 },
-                py: { xs: 1, sm: 1.5 },
-                whiteSpace: 'nowrap'
-              },
-              '& .Mui-selected': {
-                color: theme.palette.primary.main,
-              },
-              '& .MuiTabs-scrollButtons': {
-                '&.Mui-disabled': {
-                  opacity: 0.3,
-                },
-                color: theme.palette.primary.main
-              },
-              '& .MuiTabs-indicator': {
-                height: { xs: 2, sm: 3 }
-              }
-            }}
-          >
-            {categories.map((category, index) => (
-              <Tab key={category} label={category && typeof category === 'string' ? category : 'Unknown'} />
-            ))}
-          </Tabs>
-        </Container>
-      </Box>
+
 
       {/* Menu Items by Category */}
       <Container maxWidth="lg" sx={{ py: 4 }}>
