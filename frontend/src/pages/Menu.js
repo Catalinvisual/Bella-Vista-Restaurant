@@ -155,7 +155,7 @@ const Menu = () => {
       },
       {
         root: null,
-        rootMargin: '-20% 0px -70% 0px',
+        rootMargin: '-10% 0px -80% 0px',
         threshold: 0.1
       }
     );
