@@ -20,6 +20,20 @@ import { useAuth } from '../context/AuthContext';
 import CustomTimePicker from '../components/CustomTimePicker';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../utils/api';
+
+// Configure axios
+axios.defaults.baseURL = getApiUrl();
+axios.defaults.withCredentials = true;
+
+// Add token to requests if available
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 const Reservations = () => {
   const theme = useTheme();
