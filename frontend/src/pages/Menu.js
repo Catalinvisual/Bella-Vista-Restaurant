@@ -107,11 +107,13 @@ const Menu = () => {
     const grouped = {};
     categories.forEach(category => {
       if (category === 'All') {
+        // Show all products when 'All' is selected
         grouped[category] = menuItems.filter(item => 
           (item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
           (item.description || '').toLowerCase().includes(searchTerm.toLowerCase())
         );
       } else {
+        // Show only products that belong to this specific category
         grouped[category] = menuItems.filter(item => 
           item.category_name === category &&
           ((item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -320,6 +322,12 @@ const Menu = () => {
           
           // Skip empty categories when searching
           if (categoryItems.length === 0) return null;
+          
+          // If 'All' is not selected, only show categories that have items
+          // If 'All' is selected, show all items in one section
+          if (selectedCategory !== 0 && category !== categories[selectedCategory]) {
+            return null;
+          }
           
           return (
             <Box

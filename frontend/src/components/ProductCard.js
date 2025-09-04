@@ -5,7 +5,6 @@ import {
   CardContent,
   Typography,
   Button,
-  Chip,
   Box
 } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
@@ -23,24 +22,7 @@ const ProductCard = memo(({ item, onAddToCart }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  const getLabelColor = useMemo(() => {
-    return (label) => {
-      switch (label?.toLowerCase()) {
-        case 'new':
-          return { backgroundColor: '#4caf50', color: 'white' };
-        case 'promotion':
-          return { backgroundColor: '#ff9800', color: 'white' };
-        case 'sold':
-          return { backgroundColor: '#f44336', color: 'white' };
-        case 'popular':
-          return { backgroundColor: '#9c27b0', color: 'white' };
-        case 'limited':
-          return { backgroundColor: '#2196f3', color: 'white' };
-        default:
-          return { backgroundColor: '#757575', color: 'white' };
-      }
-    };
-  }, []);
+
 
   const imageUrl = useMemo(() => {
     return getImageUrl(item.image_url) || 'https://placehold.co/300x200/f5f5f5/666666?text=No+Image';
@@ -129,21 +111,7 @@ const ProductCard = memo(({ item, onAddToCart }) => {
             onError={handleImageError}
           />
         </Box>
-        {item.label && typeof item.label === 'string' && item.label.trim() && (
-          <Chip
-            label={item.label}
-            size="small"
-            sx={{
-              ...getLabelColor(item.label),
-              position: 'absolute',
-              top: 8,
-              left: 8,
-              fontSize: { xs: '0.65rem', sm: '0.75rem' },
-              height: { xs: '20px', sm: '24px' },
-              zIndex: 2
-            }}
-          />
-        )}
+
       </Box>
       <Box sx={{ 
         display: 'flex', 
