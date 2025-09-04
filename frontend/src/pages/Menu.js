@@ -332,8 +332,14 @@ const Menu = () => {
           // Skip 'All' category in the display since we show individual categories
           if (category === 'All') return null;
           
-          // Skip empty categories when searching, but show them when 'All' is selected
-          if (categoryItems.length === 0 && selectedCategory !== 0) return null;
+          // When 'All' is selected (selectedCategory === 0), show all categories for intersection observer
+          // When specific category is selected, only show that category
+          if (selectedCategory !== 0 && selectedCategory !== categories.findIndex(cat => cat === category)) {
+            return null;
+          }
+          
+          // Skip empty categories when searching
+          if (categoryItems.length === 0 && searchTerm) return null;
           
           return (
             <Box
