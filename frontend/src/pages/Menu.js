@@ -107,22 +107,31 @@ const Menu = () => {
     const grouped = {};
     categories.forEach(category => {
       if (category === 'All') {
-        // Show all products when 'All' is selected
-        grouped[category] = menuItems.filter(item => 
-          (item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (item.description || '').toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        // For 'All' category, we don't create a separate group
+        // Instead, we'll show all categories with their items
+        return;
       } else {
-        // Show only products that belong to this specific category
-        grouped[category] = menuItems.filter(item => 
-          item.category_name === category &&
-          ((item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (item.description || '').toLowerCase().includes(searchTerm.toLowerCase()))
-        );
+        // Filter items based on search and whether 'All' is selected
+        const filteredItems = menuItems.filter(item => {
+          const matchesSearch = (item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                               (item.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+          
+          if (selectedCategory === 0) {
+            // 'All' is selected - show all items in their respective categories
+            return item.category_name === category && matchesSearch;
+          } else {
+            // Specific category is selected - only show items from that category
+            return item.category_name === category && 
+                   category === categories[selectedCategory] && 
+                   matchesSearch;
+          }
+        });
+        
+        grouped[category] = filteredItems;
       }
     });
     return grouped;
-  }, [menuItems, categories, searchTerm]);
+  }, [menuItems, categories, searchTerm, selectedCategory]);
 
   // Intersection Observer for automatic category switching
   useEffect(() => {
@@ -320,14 +329,11 @@ const Menu = () => {
         {categories.map((category) => {
           const categoryItems = groupedItems[category] || [];
           
-          // Skip empty categories when searching
-          if (categoryItems.length === 0) return null;
+          // Skip 'All' category in the display since we show individual categories
+          if (category === 'All') return null;
           
-          // If 'All' is not selected, only show categories that have items
-          // If 'All' is selected, show all items in one section
-          if (selectedCategory !== 0 && category !== categories[selectedCategory]) {
-            return null;
-          }
+          // Skip empty categories when searching, but show them when 'All' is selected
+          if (categoryItems.length === 0 && selectedCategory !== 0) return null;
           
           return (
             <Box
@@ -355,18 +361,19 @@ const Menu = () => {
               </Typography>
               
               {/* Category Items */}
-              <Box 
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  width: '100%',
-                  margin: 0,
-                  '& > *': {
-                    boxSizing: 'border-box'
-                  }
-                }}
-              >
-                {categoryItems.map((item) => (
+              {categoryItems.length > 0 && (
+                <Box 
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    width: '100%',
+                    margin: 0,
+                    '& > *': {
+                      boxSizing: 'border-box'
+                    }
+                  }}
+                >
+                  {categoryItems.map((item) => (
                   <Box 
                     key={item.id}
                     sx={{
@@ -405,8 +412,9 @@ const Menu = () => {
                       showAddToCart={true}
                     />
                   </Box>
-                ))}
-              </Box>
+                  ))}
+                </Box>
+              )}
             </Box>
           );
         })}
