@@ -149,10 +149,6 @@ const Menu = () => {
             if (categoryIndex !== -1) {
               // Always update activeCategory for highlighting
               setActiveCategory(categoryIndex);
-              // Only update selectedCategory if 'All' is currently selected
-              if (selectedCategory === 0 && categoryIndex !== selectedCategory) {
-                setSelectedCategory(categoryIndex);
-              }
             }
           }
         });
