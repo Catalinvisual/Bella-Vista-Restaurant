@@ -102,8 +102,17 @@ const Header = () => {
             ))}
             
             {/* Cart Icon */}
-            <IconButton color="inherit" onClick={toggleCart}>
-              <Badge badgeContent={getCartItemsCount()} color="secondary">
+            <IconButton color="inherit" onClick={toggleCart} sx={{ mr: 1 }}>
+              <Badge 
+                badgeContent={getCartItemsCount()} 
+                color="secondary"
+                sx={{
+                  '& .MuiBadge-badge': {
+                    right: -3,
+                    top: 3,
+                  }
+                }}
+              >
                 <ShoppingCart />
               </Badge>
             </IconButton>
@@ -172,8 +181,17 @@ const Header = () => {
         {/* Mobile Menu */}
         {isMobile && (
           <>
-            <IconButton color="inherit" onClick={toggleCart}>
-              <Badge badgeContent={getCartItemsCount()} color="secondary">
+            <IconButton color="inherit" onClick={toggleCart} sx={{ mr: 1 }}>
+              <Badge 
+                badgeContent={getCartItemsCount()} 
+                color="secondary"
+                sx={{
+                  '& .MuiBadge-badge': {
+                    right: -3,
+                    top: 3,
+                  }
+                }}
+              >
                 <ShoppingCart />
               </Badge>
             </IconButton>

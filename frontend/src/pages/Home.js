@@ -7,6 +7,8 @@ import {
   Grid,
   useTheme,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import {
   Restaurant,
@@ -34,6 +36,9 @@ const Home = () => {
   const { addToCart } = useCart();
   const [popularDishes, setPopularDishes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const features = [
     {
@@ -67,6 +72,48 @@ const Home = () => {
       image_url: dish.image_url,
       quantity: 1
     });
+  };
+
+  // Handle newsletter subscription
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) {
+      setSnackbar({
+        open: true,
+        message: 'Please enter a valid email address',
+        severity: 'error'
+      });
+      return;
+    }
+
+    setNewsletterLoading(true);
+    try {
+      const response = await axios.post('/newsletter/subscribe', {
+        email: newsletterEmail
+      });
+      
+      setSnackbar({
+        open: true,
+        message: 'Successfully subscribed! Check your email for a welcome message with your 15% discount code.',
+        severity: 'success'
+      });
+      setNewsletterEmail('');
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      const errorMessage = error.response?.data?.message || 'Failed to subscribe. Please try again.';
+      setSnackbar({
+        open: true,
+        message: errorMessage,
+        severity: 'error'
+      });
+    } finally {
+      setNewsletterLoading(false);
+    }
+  };
+
+  // Handle snackbar close
+  const handleSnackbarClose = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
 
   // Fetch featured items from API
@@ -319,8 +366,12 @@ const Home = () => {
                   sx={{
                     // Small Mobile: under 480px - 1 product per row
                     width: { xs: '100%' },
-                    // Medium Mobile: 480px-767px - 2 products per row  
-                    '@media (min-width: 480px) and (max-width: 767px)': {
+                    // Medium Mobile: 480px-600px - 1 product per row  
+                    '@media (min-width: 480px) and (max-width: 600px)': {
+                      width: '100%'
+                    },
+                    // Medium Mobile: 600px-767px - 2 products per row  
+                    '@media (min-width: 600px) and (max-width: 767px)': {
                       width: '50%'
                     },
                     // Small Tablet: 768px-991px - 2 products per row
@@ -678,17 +729,16 @@ const Home = () => {
               mx: 'auto',
               flexDirection: { xs: 'column', sm: 'row' }
             }}
-            onSubmit={(e) => {
-              e.preventDefault();
-              // Handle newsletter subscription
-              alert('Thank you for subscribing! Use code WELCOME15 for 15% off your first order.');
-            }}
+            onSubmit={handleNewsletterSubmit}
           >
             <Box
               component="input"
               type="email"
               placeholder="Enter your email"
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
               required
+              disabled={newsletterLoading}
               sx={{
                 flex: 1,
                 p: 1.5,
@@ -704,6 +754,7 @@ const Home = () => {
             <Button
               type="submit"
               variant="contained"
+              disabled={newsletterLoading}
               sx={{
                 backgroundColor: 'white',
                 color: theme.palette.primary.main,
@@ -716,7 +767,7 @@ const Home = () => {
                 transition: 'all 0.3s ease'
               }}
             >
-              Subscribe
+              {newsletterLoading ? <CircularProgress size={20} color="inherit" /> : 'Subscribe'}
             </Button>
           </Box>
           <Typography
@@ -728,6 +779,22 @@ const Home = () => {
         </Box>
       </Container>
       </AnimatedSection>
+      
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

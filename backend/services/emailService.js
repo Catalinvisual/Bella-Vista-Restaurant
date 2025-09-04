@@ -318,8 +318,100 @@ Bella Vista Restaurant Team
   }
 };
 
+// Function to send newsletter welcome email
+const sendNewsletterWelcomeEmail = async (email) => {
+  try {
+    console.log('Sending newsletter welcome email to:', email);
+    
+    const emailContent = `
+Dear Valued Customer,
+
+Welcome to the Bella Vista Restaurant newsletter!
+
+Thank you for subscribing to our exclusive offers. As a welcome gift, here's your 15% discount code:
+
+🎉 WELCOME15 🎉
+
+Use this code on your first order to enjoy 15% off your total!
+
+What you can expect from our newsletter:
+• Exclusive discounts and special offers
+• New menu item announcements
+• Special event invitations
+• Seasonal promotions
+• Early access to limited-time offers
+
+We're excited to have you as part of our Bella Vista family!
+
+Best regards,
+The Bella Vista Restaurant Team
+
+P.S. Don't forget to follow us on social media for daily updates and behind-the-scenes content!
+    `;
+
+    const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+      <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #d4af37; margin: 0; font-size: 28px;">🍽️ Bella Vista Restaurant</h1>
+          <h2 style="color: #333; margin: 10px 0 0 0; font-size: 24px;">Welcome to Our Newsletter!</h2>
+        </div>
+        
+        <p style="color: #555; font-size: 16px; line-height: 1.6;">Dear Valued Customer,</p>
+        
+        <p style="color: #555; font-size: 16px; line-height: 1.6;">Thank you for subscribing to our exclusive offers! As a welcome gift, here's your special discount code:</p>
+        
+        <div style="background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; margin: 25px 0;">
+          <h3 style="margin: 0; font-size: 24px;">🎉 WELCOME15 🎉</h3>
+          <p style="margin: 10px 0 0 0; font-size: 18px;">15% OFF Your First Order!</p>
+        </div>
+        
+        <div style="background-color: #f8f8f8; padding: 20px; border-radius: 8px; margin: 25px 0;">
+          <h3 style="color: #333; margin: 0 0 15px 0;">What you can expect from our newsletter:</h3>
+          <ul style="color: #555; margin: 0; padding-left: 20px;">
+            <li style="margin-bottom: 8px;">🎯 Exclusive discounts and special offers</li>
+            <li style="margin-bottom: 8px;">🍝 New menu item announcements</li>
+            <li style="margin-bottom: 8px;">🎉 Special event invitations</li>
+            <li style="margin-bottom: 8px;">🌟 Seasonal promotions</li>
+            <li style="margin-bottom: 8px;">⚡ Early access to limited-time offers</li>
+          </ul>
+        </div>
+        
+        <p style="color: #555; font-size: 16px; line-height: 1.6;">We're excited to have you as part of our Bella Vista family!</p>
+        
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+          <p style="color: #888; font-size: 14px; margin: 0;">Best regards,<br><strong>The Bella Vista Restaurant Team</strong></p>
+          <p style="color: #888; font-size: 12px; margin: 15px 0 0 0;">P.S. Don't forget to follow us on social media for daily updates!</p>
+        </div>
+      </div>
+    </div>
+    `;
+
+    const mailOptions = {
+      from: `"Bella Vista Restaurant" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: '🎉 Welcome to Bella Vista! Your 15% Discount Code Inside',
+      text: emailContent,
+      html: htmlContent,
+      headers: {
+        'X-Priority': '3',
+        'X-MSMail-Priority': 'Normal',
+        'Importance': 'normal'
+      }
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Newsletter welcome email sent:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Error sending newsletter welcome email:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   sendOrderConfirmation,
   sendPasswordResetEmail,
   sendOrderStatusUpdate,
+  sendNewsletterWelcomeEmail,
 };

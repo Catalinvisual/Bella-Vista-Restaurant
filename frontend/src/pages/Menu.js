@@ -390,9 +390,13 @@ const Menu = () => {
                     sx={{
                       // Small Mobile: under 480px - 1 product per row
                       width: { xs: '100%' },
-                      // Medium Mobile: 480px-767px - 1 product per row  
-                      '@media (min-width: 480px) and (max-width: 767px)': {
+                      // Medium Mobile: 480px-600px - 1 product per row  
+                      '@media (min-width: 480px) and (max-width: 600px)': {
                         width: '100%'
+                      },
+                      // Medium Mobile: 600px-767px - 2 products per row  
+                      '@media (min-width: 600px) and (max-width: 767px)': {
+                        width: '50%'
                       },
                       // Small Tablet: 768px-991px - 2 products per row
                       '@media (min-width: 768px) and (max-width: 991px)': {

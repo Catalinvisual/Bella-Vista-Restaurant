@@ -317,6 +317,25 @@ VALUES (
 )
 ON CONFLICT (email) DO NOTHING;
 
+-- Newsletter subscribers table for email marketing
+CREATE TABLE newsletter_subscribers (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    unsubscribed_at TIMESTAMP,
+    source VARCHAR(50) DEFAULT 'website', -- website, admin, import, etc.
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_newsletter_subscribers_email ON newsletter_subscribers(email);
+CREATE INDEX idx_newsletter_subscribers_active ON newsletter_subscribers(is_active);
+CREATE INDEX idx_newsletter_subscribers_subscribed_at ON newsletter_subscribers(subscribed_at);
+
+-- Create trigger for newsletter_subscribers updated_at
+CREATE TRIGGER update_newsletter_subscribers_updated_at BEFORE UPDATE ON newsletter_subscribers FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
 -- Comments for documentation
 COMMENT ON TABLE users IS 'User accounts for customers and administrators';
 COMMENT ON TABLE menu_categories IS 'Categories for organizing menu items';
@@ -327,6 +346,7 @@ COMMENT ON TABLE system_settings IS 'Configurable application settings';
 COMMENT ON TABLE customer_addresses IS 'Customer delivery addresses';
 COMMENT ON TABLE reviews IS 'Customer reviews for menu items';
 COMMENT ON TABLE coupons IS 'Discount coupons and promotional codes';
+COMMENT ON TABLE newsletter_subscribers IS 'Email subscribers for newsletter and promotional offers';
 
 -- Grant permissions (adjust as needed for your environment)
 -- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO restaurant_app;

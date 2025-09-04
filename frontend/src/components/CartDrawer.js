@@ -76,7 +76,11 @@ const CartDrawer = () => {
           <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
             <ShoppingCart />
             Cart
-            <Badge badgeContent={getCartItemsCount()} color="primary" />
+            <Badge 
+              badgeContent={getCartItemsCount()} 
+              color="primary" 
+              sx={{ ml: 1.5 }}
+            />
           </Typography>
           <IconButton onClick={handleClose}>
             <Close />
@@ -157,7 +161,7 @@ const CartDrawer = () => {
                       </Box>
                       
                       {/* Quantity Controls */}
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <IconButton
                             size="small"

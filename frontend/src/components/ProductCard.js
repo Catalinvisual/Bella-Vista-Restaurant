@@ -5,7 +5,8 @@ import {
   CardContent,
   Typography,
   Button,
-  Box
+  Box,
+  Chip
 } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
 
@@ -16,6 +17,24 @@ const getImageUrl = (imageUrl) => {
   const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
   const cleanBaseUrl = baseUrl.replace('/api', '');
   return `${cleanBaseUrl}${imageUrl}`;
+};
+
+// Helper function to get label color based on label type (matching admin dashboard)
+const getLabelColor = (label) => {
+  switch (label) {
+    case 'new':
+      return '#4caf50';  // Green
+    case 'promotion':
+      return '#ff9800';  // Orange
+    case 'sold':
+      return '#f44336';  // Red
+    case 'popular':
+      return '#9c27b0';  // Purple
+    case 'limited':
+      return '#2196f3';  // Blue
+    default:
+      return '#757575';  // Gray
+  }
 };
 
 const ProductCard = memo(({ item, onAddToCart }) => {
@@ -48,13 +67,18 @@ const ProductCard = memo(({ item, onAddToCart }) => {
   return (
     <Card
       sx={{
-        height: { xs: '140px', sm: '420px', md: '380px', lg: '360px' },
+        height: { xs: '180px', sm: '420px', md: '380px', lg: '360px' },
         width: '100%',
         minWidth: '100%',
         maxWidth: '100%',
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: { xs: 'row', sm: 'column' },
+        // Custom styling for medium mobile screens (480px-600px)
+        '@media (min-width: 480px) and (max-width: 599px)': {
+          height: '200px',
+          flexDirection: 'row'
+        },
         transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
         '&:hover': {
           transform: 'translateY(-4px)',
@@ -62,11 +86,23 @@ const ProductCard = memo(({ item, onAddToCart }) => {
         }
       }}
     >
-      <Box sx={{ position: 'relative', width: { xs: '140px', sm: '100%' }, flexShrink: 0 }}>
+      <Box sx={{ 
+        position: 'relative', 
+        width: { xs: '180px', sm: '100%' }, 
+        // Custom width for medium mobile screens
+        '@media (min-width: 480px) and (max-width: 599px)': {
+          width: '200px'
+        },
+        flexShrink: 0 
+      }}>
         <Box
           sx={{
             width: '100%',
-            height: { xs: '140px', sm: '160px', md: '140px', lg: '120px' },
+            height: { xs: '180px', sm: '160px', md: '140px', lg: '120px' },
+            // Custom height for medium mobile screens
+            '@media (min-width: 480px) and (max-width: 599px)': {
+              height: '200px'
+            },
             backgroundColor: '#f5f5f5',
             display: 'flex',
             alignItems: 'center',
@@ -110,6 +146,31 @@ const ProductCard = memo(({ item, onAddToCart }) => {
             onLoad={handleImageLoad}
             onError={handleImageError}
           />
+          {/* Only show specific product labels, not category labels */}
+          {item.label && ['new', 'promotion', 'sold', 'popular', 'limited'].includes(item.label.toLowerCase()) && (
+            <Chip
+              label={
+                item.label === 'sold' ? 'Sold Out' :
+                item.label === 'limited' ? 'Limited Time' :
+                item.label.charAt(0).toUpperCase() + item.label.slice(1)
+              }
+              size="small"
+              sx={{
+                position: 'absolute',
+                top: 8,
+                left: 8,
+                backgroundColor: getLabelColor(item.label),
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: '0.7rem',
+                height: '20px',
+                zIndex: 2,
+                '& .MuiChip-label': {
+                  px: 1
+                }
+              }}
+            />
+          )}
         </Box>
 
       </Box>
@@ -117,7 +178,11 @@ const ProductCard = memo(({ item, onAddToCart }) => {
         display: 'flex', 
         flexDirection: 'column', 
         flex: 1,
-        height: { xs: '140px', sm: 'auto' },
+        height: { xs: '180px', sm: 'auto' },
+        // Custom height for medium mobile screens
+        '@media (min-width: 480px) and (max-width: 599px)': {
+          height: '200px'
+        },
         overflow: 'hidden'
       }}>
         <CardContent sx={{ 
@@ -153,7 +218,7 @@ const ProductCard = memo(({ item, onAddToCart }) => {
               lineHeight: 1.3,
               mb: { xs: 0.5, sm: 1 },
               display: '-webkit-box',
-              WebkitLineClamp: { xs: 1, sm: 2 },
+              WebkitLineClamp: { xs: 3, sm: 2 },
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
               flexGrow: 1

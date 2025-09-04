@@ -244,8 +244,8 @@ const Footer = () => {
                     backgroundColor: '#E4405F',
                     border: '2px solid #E4405F',
                     borderRadius: '50%',
-                    width: { xs: 40, sm: 48 },
-                    height: { xs: 40, sm: 48 },
+                    width: 48,
+                    height: 48,
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       backgroundColor: '#D4AF37',
@@ -267,8 +267,8 @@ const Footer = () => {
                     backgroundColor: '#1877F2',
                     border: '2px solid #1877F2',
                     borderRadius: '50%',
-                    width: { xs: 40, sm: 48 },
-                    height: { xs: 40, sm: 48 },
+                    width: 48,
+                    height: 48,
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       backgroundColor: '#D4AF37',
@@ -291,8 +291,9 @@ const Footer = () => {
                     border: '2px solid rgba(245, 233, 220, 0.2)',
                     transition: 'all 0.3s ease',
                     padding: 0,
-                    width: { xs: 40, sm: 48 },
-                    height: { xs: 40, sm: 48 },
+                    width: 48,
+                    height: 48,
+                    borderRadius: '50%',
                     '&:hover': {
                       backgroundColor: '#D4AF37',
                       transform: 'scale(1.1)',
@@ -309,8 +310,8 @@ const Footer = () => {
                   <Box
                     className="tiktok-icon"
                     sx={{
-                      width: { xs: 40, sm: 48 },
-                      height: { xs: 40, sm: 48 },
+                      width: 48,
+                      height: 48,
                       borderRadius: '50%',
                       backgroundColor: 'black',
                       display: 'flex',

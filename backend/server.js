@@ -18,6 +18,7 @@ const adminRoutes = require('./routes/admin');
 const uploadRoutes = require('./routes/upload');
 const paymentRoutes = require('./routes/payments');
 const reservationRoutes = require('./routes/reservations');
+const newsletterRoutes = require('./routes/newsletter');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -168,6 +169,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/reservations', reservationRoutes);
+app.use('/api/newsletter', newsletterRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
