@@ -1,1 +1,1 @@
-trigger deployment - fix API URL configuration
+trigger-frontend-redeploy-2025-01-25 deployment - fix API URL configuration
