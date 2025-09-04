@@ -29,6 +29,7 @@ const Menu = () => {
   const theme = useTheme();
   const { addToCart } = useCart();
   const [selectedCategory, setSelectedCategory] = useState(0);
+  const [activeCategory, setActiveCategory] = useState(0); // For scroll highlighting
   const [searchTerm, setSearchTerm] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
   const [categories, setCategories] = useState(['All']);
@@ -145,8 +146,13 @@ const Menu = () => {
           if (entry.isIntersecting) {
             const categoryName = entry.target.getAttribute('data-category');
             const categoryIndex = categories.findIndex(cat => cat === categoryName);
-            if (categoryIndex !== -1 && categoryIndex !== selectedCategory) {
-              setSelectedCategory(categoryIndex);
+            if (categoryIndex !== -1) {
+              // Always update activeCategory for highlighting
+              setActiveCategory(categoryIndex);
+              // Only update selectedCategory if 'All' is currently selected
+              if (selectedCategory === 0 && categoryIndex !== selectedCategory) {
+                setSelectedCategory(categoryIndex);
+              }
             }
           }
         });
@@ -196,6 +202,7 @@ const Menu = () => {
 
   const handleCategoryChange = useCallback((event, newValue) => {
     setSelectedCategory(newValue);
+    setActiveCategory(newValue);
     const categoryName = categories[newValue];
     if (categoryName) {
       scrollToCategory(categoryName);
@@ -284,7 +291,7 @@ const Menu = () => {
       >
         <Container maxWidth="lg">
           <Tabs
-            value={selectedCategory}
+            value={selectedCategory === 0 ? activeCategory : selectedCategory}
             onChange={handleCategoryChange}
             variant="scrollable"
             scrollButtons="auto"
