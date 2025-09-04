@@ -248,8 +248,8 @@ const sendOrderStatusUpdate = async (orderData, newStatus) => {
         color: '#2196f3'
       },
       delivered: {
-        subject: 'Order Delivered',
-        message: 'Your order has been successfully delivered. We hope you enjoy your meal!',
+        subject: 'Order Delivered - Thank You!',
+        message: 'Your order has been delivered! Thank you for choosing Bella Vista Restaurant. We hope you enjoyed your delicious meal and look forward to serving you again soon.',
         color: '#4caf50'
       },
       cancelled: {
