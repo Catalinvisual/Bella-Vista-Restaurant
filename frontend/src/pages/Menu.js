@@ -44,6 +44,11 @@ const Menu = () => {
   const categoryRefs = useRef({});
   const observerRef = useRef(null);
 
+  // Ensure page starts from top after refresh
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Fetch categories and menu items from API
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -155,7 +160,7 @@ const Menu = () => {
       },
       {
         root: null,
-        rootMargin: '-10% 0px -80% 0px',
+        rootMargin: '-50% 0px -40% 0px',
         threshold: 0.1
       }
     );
@@ -240,6 +245,30 @@ const Menu = () => {
 
   return (
     <Box>
+      {/* Category Header - Attached to main header */}
+      <Box 
+        sx={{ 
+          position: 'sticky',
+          top: 64, // Height of the main header
+          zIndex: 101,
+          backgroundColor: theme.palette.primary.main,
+          color: 'white',
+          py: 1,
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}
+      >
+        <Container maxWidth="lg">
+          <Typography
+            variant="h6"
+            component="div"
+            textAlign="center"
+            sx={{ fontWeight: 'bold' }}
+          >
+            {selectedCategory === 0 ? 'All Categories' : categories[selectedCategory] || 'Menu'}
+          </Typography>
+        </Container>
+      </Box>
+
       <Container maxWidth="lg" sx={{ pt: 4, pb: 0 }}>
         {/* Header */}
         <Typography
@@ -273,7 +302,7 @@ const Menu = () => {
       <Box 
         sx={{ 
           position: 'sticky',
-          top: 64, // Height of the header/navbar - will stick to main header when scrolling
+          top: 104, // Height of main header (64px) + category header (40px)
           zIndex: 100,
           backgroundColor: 'white',
           py: { xs: 1, sm: 2 },
