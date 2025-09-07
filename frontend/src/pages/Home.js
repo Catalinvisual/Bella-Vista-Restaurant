@@ -88,7 +88,7 @@ const Home = () => {
 
     setNewsletterLoading(true);
     try {
-      const response = await axios.post('/newsletter/subscribe', {
+      const response = await axios.post('newsletter/subscribe', {
         email: newsletterEmail
       });
       

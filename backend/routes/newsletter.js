@@ -20,7 +20,7 @@ router.post('/subscribe', [
     const { email } = req.body;
     
     // Get database connection
-    const db = req.app.get('db');
+    const db = req.app.locals.db;
     
     // Check if email already exists in newsletter subscribers
     const existingSubscriber = await db.query(
@@ -77,7 +77,7 @@ router.post('/unsubscribe', [
     }
 
     const { email } = req.body;
-    const db = req.app.get('db');
+    const db = req.app.locals.db;
     
     // Remove email from newsletter subscribers
     const result = await db.query(
