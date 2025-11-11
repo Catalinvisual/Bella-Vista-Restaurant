@@ -227,18 +227,7 @@ const Menu = () => {
     return (
       <Box sx={{ py: 4 }}>
         <Container maxWidth="lg">
-          <Alert severity="error" sx={{ mb: 4 }}>
-            {error}
-          </Alert>
-          <Box sx={{ textAlign: 'center' }}>
-            <Button 
-              variant="contained" 
-              onClick={() => window.location.reload()}
-              sx={{ mt: 2 }}
-            >
-              Retry
-            </Button>
-          </Box>
+          {/* Error message removed for live presentation */}
         </Container>
       </Box>
     );

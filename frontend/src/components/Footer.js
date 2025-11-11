@@ -348,10 +348,33 @@ const Footer = () => {
           <Typography 
             variant="body2"
             sx={{ 
-              fontSize: { xs: '0.75rem', sm: '0.875rem' }
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              mb: 1
             }}
           >
             © {new Date().getFullYear()} Bella Vista Restaurant. All rights reserved.
+          </Typography>
+          <Typography 
+            variant="body2"
+            sx={{ 
+              fontSize: { xs: '0.75rem', sm: '0.875rem' }
+            }}
+          >
+            Created by{' '}
+            <Link 
+              href="https://www.haplogic.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              sx={{ 
+                color: '#D4AF37',
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'underline'
+                }
+              }}
+            >
+              HapLogic
+            </Link>
           </Typography>
         </Box>
       </Container>
