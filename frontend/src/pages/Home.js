@@ -71,10 +71,34 @@ const Home = () => {
     },
     {
       id: 'popular-5',
-      name: 'BBQ Bacon Burger',
-      description: 'Beef patty with crispy bacon, BBQ sauce, cheddar cheese, onion rings, and pickles',
+      name: 'Vegetarian Garden Pizza',
+      description: 'Fresh vegetable medley with bell peppers, mushrooms, olives, and mozzarella on tomato basil sauce',
+      price: 12.99,
+      image_url: 'data:image/svg+xml,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%22400%22 height%3D%22300%22 viewBox%3D%220 0 400 300%22%3E%3Crect width%3D%22400%22 height%3D%22300%22 fill%3D%22%23FFDB9F%22/%3E%3Ccircle cx%3D%22200%22 cy%3D%22150%22 r%3D%22120%22 fill%3D%22%23FF6347%22 stroke%3D%22%23CC4E39%22 stroke-width%3D%223%22/%3E%3Ccircle cx%3D%22160%22 cy%3D%22120%22 r%3D%2215%22 fill%3D%22%23FF4500%22/%3E%3Ccircle cx%3D%22240%22 cy%3D%22120%22 r%3D%2215%22 fill%3D%22%23FF4500%22/%3E%3Ccircle cx%3D%22200%22 cy%3D%22160%22 r%3D%2215%22 fill%3D%22%23FF4500%22/%3E%3Crect x%3D%22150%22 y%3D%22180%22 width%3D%2220%22 height%3D%2220%22 fill%3D%22%2390EE90%22/%3E%3Crect x%3D%22230%22 y%3D%22180%22 width%3D%2220%22 height%3D%2220%22 fill%3D%22%2390EE90%22/%3E%3Ccircle cx%3D%22180%22 cy%3D%22190%22 r%3D%228%22 fill%3D%22%23FFD700%22/%3E%3Ccircle cx%3D%22220%22 cy%3D%22190%22 r%3D%228%22 fill%3D%22%23FFD700%22/%3E%3C/svg%3E',
+      is_available: true
+    },
+    {
+      id: 'popular-6',
+      name: 'Spaghetti Carbonara',
+      description: 'Classic Italian pasta with creamy egg sauce, pancetta, parmesan, and black pepper',
       price: 13.99,
-      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxyZWN0IHg9IjgwIiB5PSI3MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIzMCIgZmlsbD0iI0Q0QTU2QiIgcng9IjE1Ii8+CjxyZWN0IHg9IjgwIiB5PSIxMDAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMjAiIGZpbGw9IiNGRjYzNDciIHJ4PSIxMCIvPgo8cmVjdCB4PSI4MCIgeT0iMTIwIiB3aWR0aD0iMjQwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOTBFRTkwIiByeD0iMTAiLz4KPHJlY3QgeD0iODAiIHk9IjE0MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZGNjM0NyIgcng9IjEwIi8+CjxyZWN0IHg9IjgwIiB5PSIxNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMzAiIGZpbGw9IiNENEE1NkIiIHJ4PSIxNSIvPgo8Y2lyY2xlIGN4PSIxMjAiIGN5PSIxMTAiIHI9IjYiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTEwIiByPSI2IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjExMCIgcj0iNiIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyNDAiIGN5PSIxMTAiIHI9IjYiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
+      image_url: 'data:image/svg+xml,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%22400%22 height%3D%22300%22 viewBox%3D%220 0 400 300%22%3E%3Crect width%3D%22400%22 height%3D%22300%22 fill%3D%22%23FFF8DC%22/%3E%3Cellipse cx%3D%22200%22 cy%3D%22150%22 rx%3D%22140%22 ry%3D%22100%22 fill%3D%22%23FFEBCD%22/%3E%3Cpath d%3D%22M120 120 Q200 100 280 120 Q200 140 120 120%22 stroke%3D%22%23FFD700%22 stroke-width%3D%228%22 fill%3D%22none%22/%3E%3Cpath d%3D%22M130 140 Q200 120 270 140 Q200 160 130 140%22 stroke%3D%22%23FFD700%22 stroke-width%3D%228%22 fill%3D%22none%22/%3E%3Cpath d%3D%22M140 160 Q200 140 260 160 Q200 180 140 160%22 stroke%3D%22%23FFD700%22 stroke-width%3D%228%22 fill%3D%22none%22/%3E%3Cpath d%3D%22M150 180 Q200 160 250 180 Q200 200 150 180%22 stroke%3D%22%23FFD700%22 stroke-width%3D%228%22 fill%3D%22none%22/%3E%3Ccircle cx%3D%22160%22 cy%3D%22130%22 r%3D%225%22 fill%3D%22%23FF6347%22/%3E%3Ccircle cx%3D%22240%22 cy%3D%22150%22 r%3D%225%22 fill%3D%22%23FF6347%22/%3E%3Ccircle cx%3D%22180%22 cy%3D%22170%22 r%3D%225%22 fill%3D%22%23FF6347%22/%3E%3C/svg%3E',
+      is_available: true
+    },
+    {
+      id: 'popular-7',
+      name: 'BBQ Bacon Burger',
+      description: 'Juicy beef patty with crispy bacon, tangy BBQ sauce, cheddar cheese, and onion rings',
+      price: 13.99,
+      image_url: 'data:image/svg+xml,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%22400%22 height%3D%22300%22 viewBox%3D%220 0 400 300%22%3E%3Crect width%3D%22400%22 height%3D%22300%22 fill%3D%22%23FFDB9F%22/%3E%3Crect x%3D%2280%22 y%3D%2270%22 width%3D%22240%22 height%3D%2230%22 fill%3D%22%23D4A56B%22 rx%3D%2215%22/%3E%3Crect x%3D%2280%22 y%3D%22100%22 width%3D%22240%22 height%3D%2220%22 fill%3D%22%23FF6347%22 rx%3D%2210%22/%3E%3Crect x%3D%2280%22 y%3D%22120%22 width%3D%22240%22 height%3D%2220%22 fill%3D%22%2390EE90%22 rx%3D%2210%22/%3E%3Crect x%3D%2280%22 y%3D%22140%22 width%3D%22240%22 height%3D%2220%22 fill%3D%22%23FF6347%22 rx%3D%2210%22/%3E%3Crect x%3D%2280%22 y%3D%22160%22 width%3D%22240%22 height%3D%2230%22 fill%3D%22%23D4A56B%22 rx%3D%2215%22/%3E%3Ccircle cx%3D%22120%22 cy%3D%22110%22 r%3D%226%22 fill%3D%22%23FFF%22/%3E%3Ccircle cx%3D%22160%22 cy%3D%22110%22 r%3D%226%22 fill%3D%22%23FFF%22/%3E%3Ccircle cx%3D%22200%22 cy%3D%22110%22 r%3D%226%22 fill%3D%22%23FFF%22/%3E%3Ccircle cx%3D%22240%22 cy%3D%22110%22 r%3D%226%22 fill%3D%22%23FFF%22/%3E%3C/svg%3E',
+      is_available: true
+    },
+    {
+      id: 'popular-8',
+      name: 'Tiramisu Classic',
+      description: 'Traditional Italian dessert with coffee-soaked ladyfingers, mascarpone cream, and cocoa',
+      price: 7.99,
+      image_url: 'data:image/svg+xml,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%22400%22 height%3D%22300%22 viewBox%3D%220 0 400 300%22%3E%3Crect width%3D%22400%22 height%3D%22300%22 fill%3D%22%23FFDB9F%22/%3E%3Crect x%3D%22120%22 y%3D%2280%22 width%3D%22160%22 height%3D%22140%22 fill%3D%22%23F5DEB3%22 rx%3D%2210%22/%3E%3Crect x%3D%22130%22 y%3D%2290%22 width%3D%22140%22 height%3D%2220%22 fill%3D%22%238B4513%22/%3E%3Crect x%3D%22130%22 y%3D%22120%22 width%3D%22140%22 height%3D%2220%22 fill%3D%22%23FFF%22/%3E%3Crect x%3D%22130%22 y%3D%22150%22 width%3D%22140%22 height%3D%2220%22 fill%3D%22%238B4513%22/%3E%3Crect x%3D%22130%22 y%3D%22180%22 width%3D%22140%22 height%3D%2220%22 fill%3D%22%23FFF%22/%3E%3Crect x%3D%22120%22 y%3D%22220%22 width%3D%22160%22 height%3D%2220%22 fill%3D%22%23D2691E%22/%3E%3C/svg%3E',
       is_available: true
     },
     {
@@ -87,8 +111,8 @@ const Home = () => {
     }
   ];
 
-  const [popularDishes, setPopularDishes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [popularDishes, setPopularDishes] = useState(staticPopularDishes);
+  const [loading, setLoading] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });

@@ -56,6 +56,8 @@ axios.interceptors.request.use(
 // Helper function to get full image URL
 const getImageUrl = (imageUrl) => {
   if (!imageUrl) return '';
+  // Lasă imaginile SVG inline (data:image/svg+xml) nemodificate
+  if (imageUrl.startsWith('data:image/svg+xml')) return imageUrl;
   if (imageUrl.startsWith('http')) return imageUrl;
   const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
   const cleanBaseUrl = baseUrl.replace('/api', '');

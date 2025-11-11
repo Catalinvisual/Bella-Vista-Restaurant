@@ -135,7 +135,7 @@ const Menu = () => {
       description: 'Traditional Italian pizza with fresh mozzarella, tomato sauce, and basil leaves on a crispy thin crust',
       price: 12.99,
       category_name: 'Pizza',
-      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iMTIwIiBmaWxsPSIjRkY2MzQ3Ii8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEwMCIgcj0iMTUiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMTAwIiByPSIxNSIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE1IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjIwMCIgcj0iMTUiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjAwIiByPSIxNSIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      image_url: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%23FDB813"/><circle cx="200" cy="150" r="120" fill="%23FF6347"/><circle cx="150" cy="100" r="15" fill="white"/><circle cx="250" cy="100" r="15" fill="white"/><circle cx="200" cy="200" r="15" fill="white"/><circle cx="150" cy="200" r="15" fill="white"/><circle cx="250" cy="200" r="15" fill="white"/></svg>',
       is_available: true
     },
     {
@@ -144,7 +144,7 @@ const Menu = () => {
       description: 'Classic pizza loaded with spicy pepperoni, mozzarella cheese, and our special tomato sauce',
       price: 14.99,
       category_name: 'Pizza',
-      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iMTIwIiBmaWxsPSIjRkY2MzQ3Ii8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEwMCIgcj0iMTIiIGZpbGw9IiNGRjMzMzMiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMTAwIiByPSIxMiIgZmlsbD0iI0ZGMzMzMyIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjEyIiBmaWxsPSIjRkYzMzMzIi8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjIwMCIgcj0iMTIiIGZpbGw9IiNGRjMzMzMiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjAwIiByPSIxMiIgZmlsbD0iI0ZGMzMzMyIvPgo8Y2lyY2xlIGN4PSIxNzAiIGN5PSIxMjAiIHI9IjEwIiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjIzMCIgY3k9IjEyMCIgcj0iMTAiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTcwIiByPSIxMCIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      image_url: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%23FDB813"/><circle cx="200" cy="150" r="120" fill="%23FF6347"/><circle cx="150" cy="100" r="12" fill="%23FF3333"/><circle cx="250" cy="100" r="12" fill="%23FF3333"/><circle cx="200" cy="200" r="12" fill="%23FF3333"/><circle cx="150" cy="200" r="12" fill="%23FF3333"/><circle cx="250" cy="200" r="12" fill="%23FF3333"/><circle cx="170" cy="120" r="10" fill="white"/><circle cx="230" cy="120" r="10" fill="white"/><circle cx="200" cy="170" r="10" fill="white"/></svg>',
       is_available: true
     },
     {
@@ -153,7 +153,7 @@ const Menu = () => {
       description: 'Healthy pizza with bell peppers, mushrooms, olives, onions, and fresh tomatoes',
       price: 13.99,
       category_name: 'Pizza',
-      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iMTIwIiBmaWxsPSIjRkY2MzQ3Ii8+CjxyZWN0IHg9IjE0MCIgeT0iMTIwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiM5MEVFOTAiIHJ4PSI1Ii8+CjxyZWN0IHg9IjI0MCIgeT0iMTIwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiM5MEVFOTAiIHJ4PSI1Ii8+CjxyZWN0IHg9IjE3MCIgeT0iMTcwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiM5MEVFOTAiIHJ4PSI1Ii8+CjxyZWN0IHg9IjIxMCIgeT0iMTcwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiM5MEVFOTAiIHJ4PSI1Ii8+CjxjaXJjbGUgY3g9IjE2MCIgY3k9IjkwIiByPSIxMiIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyNDAiIGN5PSI5MCIgcj0iMTIiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
+      image_url: 'data:image/svg+xml,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%22400%22 height%3D%22300%22 viewBox%3D%220 0 400 300%22%3E%3Crect width%3D%22400%22 height%3D%22300%22 fill%3D%22%23FFDB9F%22/%3E%3Ccircle cx%3D%22200%22 cy%3D%22150%22 r%3D%22120%22 fill%3D%22%23FF6347%22 stroke%3D%22%23CC4E39%22 stroke-width%3D%223%22/%3E%3Ccircle cx%3D%22160%22 cy%3D%22120%22 r%3D%2215%22 fill%3D%22%23FF4500%22/%3E%3Ccircle cx%3D%22240%22 cy%3D%22120%22 r%3D%2215%22 fill%3D%22%23FF4500%22/%3E%3Ccircle cx%3D%22200%22 cy%3D%22160%22 r%3D%2215%22 fill%3D%22%23FF4500%22/%3E%3Crect x%3D%22150%22 y%3D%22180%22 width%3D%2220%22 height%3D%2220%22 fill%3D%22%2390EE90%22/%3E%3Crect x%3D%22230%22 y%3D%22180%22 width%3D%2220%22 height%3D%2220%22 fill%3D%22%2390EE90%22/%3E%3Ccircle cx%3D%22180%22 cy%3D%22190%22 r%3D%228%22 fill%3D%22%23FFD700%22/%3E%3Ccircle cx%3D%22220%22 cy%3D%22190%22 r%3D%228%22 fill%3D%22%23FFD700%22/%3E%3C/svg%3E',
       is_available: true
     },
     // PASTA CATEGORY
@@ -163,7 +163,7 @@ const Menu = () => {
       description: 'Fettuccine pasta tossed in rich parmesan cream sauce with grilled chicken breast and fresh parsley',
       price: 14.99,
       category_name: 'Pasta',
-      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxMDAiIHJ5PSI2MCIgZmlsbD0iI0ZGRDhEMyIgc3Ryb2tlPSIjRkY2MzQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEyMCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjEyMCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjE4MCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjE4MCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjE4MCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPC9zdmc+',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxMDAiIHJ5PSI2MCIgZmlsbD0iI0ZGRDhEMyIgc3Ryb2tlPSIjRkY2MzQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEyMCIgcng9IjE1IiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjEyMCIgcng9IjE1IiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPC9zdmc+',
       is_available: true
     },
     {
@@ -172,7 +172,7 @@ const Menu = () => {
       description: 'Traditional Italian pasta with crispy bacon, egg, parmesan cheese, and black pepper',
       price: 13.99,
       category_name: 'Pasta',
-      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxMjAiIHJ5PSI4MCIgZmlsbD0iI0ZGRDhEMyIgc3Ryb2tlPSIjRkY2MzQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KPGVsbGlwc2UgY3g9IjE2MCIgY3k9IjEzMCIgcng9IjE1IiByeT0iMTAiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI0MCIgY3k9IjEzMCIgcng9IjE1IiByeT0iMTAiIGZpbGw9IiNGRkY4RDMiLz4KPGNpcmNsZSBjeD0iMTcwIiBjeT0iMTcwIiByPSI4IiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjIzMCIgY3k9IjE3MCIgcj0iOCIgZmlsbD0iIzMzMyIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxOTAiIHI9IjgiIGZpbGw9IiMzMzMiLz4KPC9zdmc+',
+      image_url: 'data:image/svg+xml,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%22400%22 height%3D%22300%22 viewBox%3D%220 0 400 300%22%3E%3Crect width%3D%22400%22 height%3D%22300%22 fill%3D%22%23FFF8DC%22/%3E%3Cellipse cx%3D%22200%22 cy%3D%22150%22 rx%3D%22140%22 ry%3D%22100%22 fill%3D%22%23FFEBCD%22/%3E%3Cpath d%3D%22M120 120 Q200 100 280 120 Q200 140 120 120%22 stroke%3D%22%23FFD700%22 stroke-width%3D%228%22 fill%3D%22none%22/%3E%3Cpath d%3D%22M130 140 Q200 120 270 140 Q200 160 130 140%22 stroke%3D%22%23FFD700%22 stroke-width%3D%228%22 fill%3D%22none%22/%3E%3Cpath d%3D%22M140 160 Q200 140 260 160 Q200 180 140 160%22 stroke%3D%22%23FFD700%22 stroke-width%3D%228%22 fill%3D%22none%22/%3E%3Cpath d%3D%22M150 180 Q200 160 250 180 Q200 200 150 180%22 stroke%3D%22%23FFD700%22 stroke-width%3D%228%22 fill%3D%22none%22/%3E%3Ccircle cx%3D%22160%22 cy%3D%22130%22 r%3D%225%22 fill%3D%22%23FF6347%22/%3E%3Ccircle cx%3D%22240%22 cy%3D%22150%22 r%3D%225%22 fill%3D%22%23FF6347%22/%3E%3Ccircle cx%3D%22180%22 cy%3D%22170%22 r%3D%225%22 fill%3D%22%23FF6347%22/%3E%3C/svg%3E',
       is_available: true
     },
     {
@@ -256,7 +256,7 @@ const Menu = () => {
       description: 'Traditional Italian dessert with coffee-soaked ladyfingers and mascarpone cream',
       price: 6.99,
       category_name: 'Desserts',
-      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5sPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxyZWN0IHg9IjgwIiB5PSI4MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzhCNjM0NyIgcng9IjUiLz4KPHJlY3QgeD0iODAiIHk9IjEyMCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI0ZGRiIgcng9IjUiLz4KPHJlY3QgeD0iODAiIHk9IjE2MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzhCNjM0NyIgcng9IjUiLz4KPHJlY3QgeD0iODAiIHk9IjIwMCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI0ZGRiIgcng9IjUiLz4KPGNpcmNsZSBjeD0iMTIwIiBjeT0iMTAwIiByPSI4IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjE2MCIgY3k9IjEwMCIgcj0iOCIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxMDAiIHI9IjgiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjQwIiBjeT0iMTAwIiByPSI4IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjI4MCIgY3k9IjEwMCIgcj0iOCIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGRkYwIi8+CjxyZWN0IHg9IjgwIiB5PSI4MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzhCNjM0NyIgcng9IjUiLz4KPHJlY3QgeD0iODAiIHk9IjEyMCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI0ZGRiIgcng9IjUiLz4KPHJlY3QgeD0iODAiIHk9IjE2MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzhCNjM0NyIgcng9IjUiLz4KPHJlY3QgeD0iODAiIHk9IjIwMCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI0ZGRiIgcng9IjUiLz4KPGNpcmNsZSBjeD0iMTIwIiBjeT0iMTAwIiByPSI4IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjE2MCIgY3k9IjEwMCIgcj0iOCIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxMDAiIHI9IjgiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjQwIiBjeT0iMTAwIiByPSI4IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjI4MCIgY3k9IjEwMCIgcj0iOCIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
       is_available: true
     },
     {
@@ -265,21 +265,21 @@ const Menu = () => {
       description: 'Buttery tart crust filled with vanilla cream and topped with seasonal fresh fruits',
       price: 8.99,
       category_name: 'Desserts',
-      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iODAiIGZpbGw9IiNGRkY4RDMiIHN0cm9rZT0iI0RkQTU2QiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxjaXJjbGUgY3g9IjE2MCIgY3k9IjEyMCIgcj0iMTIiIGZpbGw9IiNGRjMzMzMiLz4KPGNpcmNsZSBjeD0iMjQwIiBjeT0iMTIwIiByPSIxMiIgZmlsbD0iI0ZGNzUwMCIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNjAiIHI9IjEyIiBmaWxsPSIjOTBFRTkwIi8+CjxjaXJjbGUgY3g9IjE4MCIgY3k9IjE4MCIgcj0iMTIiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjIwIiBjeT0iMTgwIiByPSIxMiIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxODAiIHI9IjEyIiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjI0MCIgY3k9IjE4MCIgcj0iMTIiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iODAiIGZpbGw9IiNGRkY4RDMiIHN0cm9rZT0iI0RkQTU2QiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxjaXJjbGUgY3g9IjE2MCIgY3k9IjEyMCIgcj0iMTIiIGZpbGw9IiNGRjMzMzMiLz4KPGNpcmNsZSBjeD0iMjQwIiBjeT0iMTIwIiByPSIxMiIgZmlsbD0iI0ZGNzUwMCIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNjAiIHI9IjEyIiBmaWxsPSIjOTBFRTkwIi8+CjxjaXJjbGUgY3g9IjE4MCIgY3k9IjE4MCIgcj0iMTIiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjQwIiBjeT0iMTgwIiByPSIxMiIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxODAiIHI9IjEyIiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjI0MCIgY3k9IjE4MCIgcj0iMTIiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
       is_available: true
     },
     // BEVERAGES CATEGORY
     {
-      id: 'static-drink-1',
+      id: 'static-beverage-1',
       name: 'Fresh Orange Juice',
-      description: 'Freshly squeezed orange juice with pulp, rich in vitamin C',
+      description: 'Freshly squeezed orange juice with pulp, served chilled',
       price: 4.99,
       category_name: 'Beverages',
       image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGRkYwIi8+CjxyZWN0IHg9IjE1MCIgeT0iNjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTgwIiBmaWxsPSIjRkZGIiByeD0iMTUiIHN0cm9rZT0iI0ZGOEEwMCIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxMDAiIHJ4PSIzMCIgcnk9IjUwIiBmaWxsPSIjRkZBOjAwIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIyNSIgcnk9IjQwIiBmaWxsPSIjRkY5NTAwIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyMDAiIHJ4PSIyMCIgcnk9IjMwIiBmaWxsPSIjRkY4QTAwIi8+Cjwvc3ZnPg==',
       is_available: true
     },
     {
-      id: 'static-drink-2',
+      id: 'static-beverage-2',
       name: 'Iced Caramel Latte',
       description: 'Rich espresso with cold milk, caramel syrup, and whipped cream over ice',
       price: 5.99,
@@ -288,7 +288,7 @@ const Menu = () => {
       is_available: true
     },
     {
-      id: 'static-drink-3',
+      id: 'static-beverage-3',
       name: 'Strawberry Smoothie',
       description: 'Fresh strawberries blended with yogurt, honey, and ice for a refreshing drink',
       price: 6.99,
