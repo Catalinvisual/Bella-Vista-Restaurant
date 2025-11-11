@@ -74,29 +74,46 @@ const Menu = () => {
         // Fetch from API if not in cache
         const apiTimer = performanceMonitor.startTiming('menu-api-calls');
         
-        // Fetch categories
-        const categoriesResponse = await axios.get('/menu/categories');
-        const fetchedCategories = ['All', ...categoriesResponse.data.categories
-          .filter(cat => cat.name && typeof cat.name === 'string')
-          .map(cat => cat.name)];
+        // Static categories for presentation
+        const staticCategories = ['All', 'Pizza', 'Pasta', 'Salads', 'Burgers', 'Desserts', 'Beverages'];
         
-        // Fetch menu items
-        const itemsResponse = await axios.get('/menu/items');
-        const menuItems = itemsResponse.data.items || [];
+        try {
+          // Try to fetch categories from API
+          const categoriesResponse = await axios.get('/menu/categories');
+          const fetchedCategories = ['All', ...categoriesResponse.data.categories
+            .filter(cat => cat.name && typeof cat.name === 'string')
+            .map(cat => cat.name)];
+          
+          // Merge static categories with API categories
+          const mergedCategories = [...new Set([...staticCategories, ...fetchedCategories])];
+          setCategories(mergedCategories);
+        } catch (catError) {
+          // If categories fetch fails, use static categories
+          console.warn('Failed to fetch categories from API, using static categories');
+          setCategories(staticCategories);
+        }
         
-        apiTimer.end({ itemCount: menuItems.length });
-        
-        // Store in cache
-        const menuData = {
-          categories: fetchedCategories,
-          items: menuItems
-        };
-        apiCache.set(cacheKey, menuData);
-        
-        setCategories(fetchedCategories);
-        setMenuItems(menuItems);
-        
-        timer.end({ source: 'api', itemCount: menuItems.length });
+        try {
+          // Fetch menu items
+          const itemsResponse = await axios.get('/menu/items');
+          const menuItems = itemsResponse.data.items || [];
+          setMenuItems(menuItems);
+          
+          apiTimer.end({ itemCount: menuItems.length });
+          
+          // Store in cache
+          const menuData = {
+            categories: staticCategories,
+            items: menuItems
+          };
+          apiCache.set(cacheKey, menuData);
+        } catch (itemsError) {
+          // If items fetch fails, just use empty array (static items will be used)
+          console.warn('Failed to fetch menu items from API, using static items only');
+          setMenuItems([]);
+          apiTimer.end({ itemCount: 0 });
+          timer.end({ source: 'api', itemCount: 0 });
+        }
       } catch (err) {
         console.error('Error fetching menu data:', err);
         setError('Failed to load menu items. Please try again later.');
@@ -109,34 +126,217 @@ const Menu = () => {
     fetchMenuItems();
   }, []);
 
+  // Static fictional menu items for presentation
+  const staticMenuItems = [
+    // PIZZA CATEGORY
+    {
+      id: 'static-pizza-1',
+      name: 'Classic Margherita Pizza',
+      description: 'Traditional Italian pizza with fresh mozzarella, tomato sauce, and basil leaves on a crispy thin crust',
+      price: 12.99,
+      category_name: 'Pizza',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iMTIwIiBmaWxsPSIjRkY2MzQ3Ii8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEwMCIgcj0iMTUiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMTAwIiByPSIxNSIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE1IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjIwMCIgcj0iMTUiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjAwIiByPSIxNSIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      is_available: true
+    },
+    {
+      id: 'static-pizza-2',
+      name: 'Pepperoni Supreme Pizza',
+      description: 'Classic pizza loaded with spicy pepperoni, mozzarella cheese, and our special tomato sauce',
+      price: 14.99,
+      category_name: 'Pizza',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iMTIwIiBmaWxsPSIjRkY2MzQ3Ii8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEwMCIgcj0iMTIiIGZpbGw9IiNGRjMzMzMiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMTAwIiByPSIxMiIgZmlsbD0iI0ZGMzMzMyIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjEyIiBmaWxsPSIjRkYzMzMzIi8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjIwMCIgcj0iMTIiIGZpbGw9IiNGRjMzMzMiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjAwIiByPSIxMiIgZmlsbD0iI0ZGMzMzMyIvPgo8Y2lyY2xlIGN4PSIxNzAiIGN5PSIxMjAiIHI9IjEwIiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjIzMCIgY3k9IjEyMCIgcj0iMTAiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTcwIiByPSIxMCIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      is_available: true
+    },
+    {
+      id: 'static-pizza-3',
+      name: 'Vegetarian Garden Pizza',
+      description: 'Healthy pizza with bell peppers, mushrooms, olives, onions, and fresh tomatoes',
+      price: 13.99,
+      category_name: 'Pizza',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iMTIwIiBmaWxsPSIjRkY2MzQ3Ii8+CjxyZWN0IHg9IjE0MCIgeT0iMTIwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiM5MEVFOTAiIHJ4PSI1Ii8+CjxyZWN0IHg9IjI0MCIgeT0iMTIwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiM5MEVFOTAiIHJ4PSI1Ii8+CjxyZWN0IHg9IjE3MCIgeT0iMTcwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiM5MEVFOTAiIHJ4PSI1Ii8+CjxyZWN0IHg9IjIxMCIgeT0iMTcwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiM5MEVFOTAiIHJ4PSI1Ii8+CjxjaXJjbGUgY3g9IjE2MCIgY3k9IjkwIiByPSIxMiIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyNDAiIGN5PSI5MCIgcj0iMTIiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
+      is_available: true
+    },
+    // PASTA CATEGORY
+    {
+      id: 'static-pasta-1',
+      name: 'Creamy Chicken Alfredo',
+      description: 'Fettuccine pasta tossed in rich parmesan cream sauce with grilled chicken breast and fresh parsley',
+      price: 14.99,
+      category_name: 'Pasta',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxMDAiIHJ5PSI2MCIgZmlsbD0iI0ZGRDhEMyIgc3Ryb2tlPSIjRkY2MzQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEyMCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjEyMCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjE4MCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjE4MCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjE4MCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPC9zdmc+',
+      is_available: true
+    },
+    {
+      id: 'static-pasta-2',
+      name: 'Spaghetti Carbonara',
+      description: 'Traditional Italian pasta with crispy bacon, egg, parmesan cheese, and black pepper',
+      price: 13.99,
+      category_name: 'Pasta',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxMjAiIHJ5PSI4MCIgZmlsbD0iI0ZGRDhEMyIgc3Ryb2tlPSIjRkY2MzQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KPGVsbGlwc2UgY3g9IjE2MCIgY3k9IjEzMCIgcng9IjE1IiByeT0iMTAiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI0MCIgY3k9IjEzMCIgcng9IjE1IiByeT0iMTAiIGZpbGw9IiNGRkY4RDMiLz4KPGNpcmNsZSBjeD0iMTcwIiBjeT0iMTcwIiByPSI4IiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjIzMCIgY3k9IjE3MCIgcj0iOCIgZmlsbD0iIzMzMyIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxOTAiIHI9IjgiIGZpbGw9IiMzMzMiLz4KPC9zdmc+',
+      is_available: true
+    },
+    {
+      id: 'static-pasta-3',
+      name: 'Seafood Linguine',
+      description: 'Fresh linguine pasta with mixed seafood in white wine and garlic sauce',
+      price: 16.99,
+      category_name: 'Pasta',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxMjAiIHJ5PSI4MCIgZmlsbD0iI0ZGRDhEMyIgc3Ryb2tlPSIjRkY2MzQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEyMCIgcng9IjE1IiByeT0iMTAiIGZpbGw9IiNGRjYzNDciLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjEyMCIgcng9IjE1IiByeT0iMTAiIGZpbGw9IiNGRjYzNDciLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMTAiIGZpbGw9IiNGRjYzNDciLz4KPGNpcmNsZSBjeD0iMTcwIiBjeT0iMTUwIiByPSI2IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjIzMCIgY3k9IjE1MCIgcj0iNiIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      is_available: true
+    },
+    // SALADS CATEGORY
+    {
+      id: 'static-salad-1',
+      name: 'Fresh Caesar Salad',
+      description: 'Crisp romaine lettuce with parmesan cheese, croutons, and our signature Caesar dressing',
+      price: 8.99,
+      category_name: 'Salads',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGRkYwIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxNDAiIHJ5PSIxMDAiIGZpbGw9IiM5MEVFOTAiLz4KPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEyMCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkYiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjEyMCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkYiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkYiLz4KPGVsbGlwc2UgY3g9IjE3MCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkYiLz4KPGVsbGlwc2UgY3g9IjIzMCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
+      is_available: true
+    },
+    {
+      id: 'static-salad-2',
+      name: 'Greek Village Salad',
+      description: 'Fresh tomatoes, cucumbers, red onions, olives, and feta cheese with olive oil dressing',
+      price: 9.99,
+      category_name: 'Salads',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGRkYwIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxNDAiIHJ5PSIxMDAiIGZpbGw9IiM5MEVFOTAiLz4KPHJlY3QgeD0iMTcwIiB5PSIxMjAiIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0iI0ZGNjM0NyIgcng9IjUiLz4KPHJlY3QgeD0iMjEwIiB5PSIxMjAiIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0iI0ZGNjM0NyIgcng9IjUiLz4KPHJlY3QgeD0iMTUwIiB5PSIxNzAiIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0iI0ZGRiIgcng9IjUiLz4KPHJlY3QgeD0iMjMwIiB5PSIxNzAiIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0iI0ZGRiIgcng9IjUiLz4KPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTAwIiByPSIxMiIgZmlsbD0iIzhCNjM0NyIvPgo8L3N2Zz4=',
+      is_available: true
+    },
+    {
+      id: 'static-salad-3',
+      name: 'Avocado Quinoa Bowl',
+      description: 'Nutritious quinoa with ripe avocado, cherry tomatoes, corn, and lime vinaigrette',
+      price: 11.99,
+      category_name: 'Salads',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGRkYwIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxNDAiIHJ5PSIxMDAiIGZpbGw9IiM5MEVFOTAiLz4KPGVsbGlwc2UgY3g9IjE3MCIgY3k9IjEyMCIgcng9IjIwIiByeT0iMjUiIGZpbGw9IiM5MEVFOTAiLz4KPGVsbGlwc2UgY3g9IjIzMCIgY3k9IjEyMCIgcng9IjIwIiByeT0iMjUiIGZpbGw9IiM5MEVFOTAiLz4KPGNpcmNsZSBjeD0iMTUwIiBjeT0iMTcwIiByPSIxNSIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyNTAiIGN5PSIxNzAiIHI9IjE1IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE5MCIgcj0iMTUiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
+      is_available: true
+    },
+    // BURGERS CATEGORY
+    {
+      id: 'static-burger-1',
+      name: 'Gourmet Beef Burger',
+      description: 'Juicy beef patty with lettuce, tomato, onion, cheese, and our special sauce on a toasted bun',
+      price: 11.99,
+      category_name: 'Burgers',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxyZWN0IHg9IjgwIiB5PSI4MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIzMCIgZmlsbD0iI0Q0QTU2QiIgcng9IjE1Ii8+CjxyZWN0IHg9IjgwIiB5PSIxMTAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMjAiIGZpbGw9IiNGRjYzNDciIHJ4PSIxMCIvPgo8cmVjdCB4PSI4MCIgeT0iMTMwIiB3aWR0aD0iMjQwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOTBFRTkwIiByeD0iMTAiLz4KPHJlY3QgeD0iODAiIHk9IjE1MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIzMCIgZmlsbD0iI0Q0QTU2QiIgcng9IjE1Ii8+CjxjaXJjbGUgY3g9IjEyMCIgY3k9IjEyMCIgcj0iNiIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxMjAiIHI9IjYiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTIwIiByPSI2IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjI0MCIgY3k9IjEyMCIgcj0iNiIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      is_available: true
+    },
+    {
+      id: 'static-burger-2',
+      name: 'BBQ Bacon Burger',
+      description: 'Beef patty with crispy bacon, BBQ sauce, cheddar cheese, onion rings, and pickles',
+      price: 13.99,
+      category_name: 'Burgers',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxyZWN0IHg9IjgwIiB5PSI3MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIzMCIgZmlsbD0iI0Q0QTU2QiIgcng9IjE1Ii8+CjxyZWN0IHg9IjgwIiB5PSIxMDAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMjAiIGZpbGw9IiNGRjYzNDciIHJ4PSIxMCIvPgo8cmVjdCB4PSI4MCIgeT0iMTIwIiB3aWR0aD0iMjQwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOTBFRTkwIiByeD0iMTAiLz4KPHJlY3QgeD0iODAiIHk9IjE0MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZGNjM0NyIgcng9IjEwIi8+CjxyZWN0IHg9IjgwIiB5PSIxNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMzAiIGZpbGw9IiNENEE1NkIiIHJ4PSIxNSIvPgo8Y2lyY2xlIGN4PSIxMjAiIGN5PSIxMTAiIHI9IjYiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTEwIiByPSI2IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjExMCIgcj0iNiIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyNDAiIGN5PSIxMTAiIHI9IjYiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
+      is_available: true
+    },
+    {
+      id: 'static-burger-3',
+      name: 'Mushroom Swiss Burger',
+      description: 'Beef patty with sautéed mushrooms, Swiss cheese, caramelized onions, and garlic mayo',
+      price: 12.99,
+      category_name: 'Burgers',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxyZWN0IHg9IjgwIiB5PSI3NSIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIzMCIgZmlsbD0iI0Q0QTU2QiIgcng9IjE1Ii8+CjxyZWN0IHg9IjgwIiB5PSIxMDUiIHdpZHRoPSIyNDAiIGhlaWdodD0iMjAiIGZpbGw9IiNGRjYzNDciIHJ4PSIxMCIvPgo8cmVjdCB4PSI4MCIgeT0iMTI1IiB3aWR0aD0iMjQwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOTBFRTkwIiByeD0iMTAiLz4KPHJlY3QgeD0iODAiIHk9IjE0NSIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzhCNjM0NyIgcng9IjEwIi8+CjxyZWN0IHg9IjgwIiB5PSIxNjUiIHdpZHRoPSIyNDAiIGhlaWdodD0iMzAiIGZpbGw9IiNENEE1NkIiIHJ4PSIxNSIvPgo8Y2lyY2xlIGN4PSIxMzAiIGN5PSIxMzUiIHI9IjgiIGZpbGw9IiM4QjYzNDciLz4KPGNpcmNsZSBjeD0iMTcwIiBjeT0iMTM1IiByPSI4IiBmaWxsPSIjOEI2MzQ3Ii8+CjxjaXJjbGUgY3g9IjIxMCIgY3k9IjEzNSIgcj0iOCIgZmlsbD0iIzhCNjM0NyIvPgo8Y2lyY2xlIGN4PSIyNTAiIGN5PSIxMzUiIHI9IjgiIGZpbGw9IiM4QjYzNDciLz4KPC9zdmc+',
+      is_available: true
+    },
+    // DESSERTS CATEGORY
+    {
+      id: 'static-dessert-1',
+      name: 'Chocolate Lava Cake',
+      description: 'Warm chocolate cake with a molten center, served with vanilla ice cream',
+      price: 7.99,
+      category_name: 'Desserts',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iODAiIGZpbGw9IiM4QjQ1MTMiLz4KPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTUwIiByPSI2MCIgZmlsbD0iIzNFMjcyMyIvPgo8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxMTAiIHI9IjgiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjQwIiBjeT0iMTEwIiByPSI4IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE5MCIgcj0iOCIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      is_available: true
+    },
+    {
+      id: 'static-dessert-2',
+      name: 'Tiramisu Classic',
+      description: 'Traditional Italian dessert with coffee-soaked ladyfingers and mascarpone cream',
+      price: 6.99,
+      category_name: 'Desserts',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5sPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxyZWN0IHg9IjgwIiB5PSI4MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzhCNjM0NyIgcng9IjUiLz4KPHJlY3QgeD0iODAiIHk9IjEyMCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI0ZGRiIgcng9IjUiLz4KPHJlY3QgeD0iODAiIHk9IjE2MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzhCNjM0NyIgcng9IjUiLz4KPHJlY3QgeD0iODAiIHk9IjIwMCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0iI0ZGRiIgcng9IjUiLz4KPGNpcmNsZSBjeD0iMTIwIiBjeT0iMTAwIiByPSI4IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjE2MCIgY3k9IjEwMCIgcj0iOCIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxMDAiIHI9IjgiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjQwIiBjeT0iMTAwIiByPSI4IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjI4MCIgY3k9IjEwMCIgcj0iOCIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      is_available: true
+    },
+    {
+      id: 'static-dessert-3',
+      name: 'Fresh Fruit Tart',
+      description: 'Buttery tart crust filled with vanilla cream and topped with seasonal fresh fruits',
+      price: 8.99,
+      category_name: 'Desserts',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iODAiIGZpbGw9IiNGRkY4RDMiIHN0cm9rZT0iI0RkQTU2QiIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxjaXJjbGUgY3g9IjE2MCIgY3k9IjEyMCIgcj0iMTIiIGZpbGw9IiNGRjMzMzMiLz4KPGNpcmNsZSBjeD0iMjQwIiBjeT0iMTIwIiByPSIxMiIgZmlsbD0iI0ZGNzUwMCIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNjAiIHI9IjEyIiBmaWxsPSIjOTBFRTkwIi8+CjxjaXJjbGUgY3g9IjE4MCIgY3k9IjE4MCIgcj0iMTIiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjIwIiBjeT0iMTgwIiByPSIxMiIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxODAiIHI9IjEyIiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjI0MCIgY3k9IjE4MCIgcj0iMTIiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
+      is_available: true
+    },
+    // BEVERAGES CATEGORY
+    {
+      id: 'static-drink-1',
+      name: 'Fresh Orange Juice',
+      description: 'Freshly squeezed orange juice with pulp, rich in vitamin C',
+      price: 4.99,
+      category_name: 'Beverages',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGRkYwIi8+CjxyZWN0IHg9IjE1MCIgeT0iNjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTgwIiBmaWxsPSIjRkZGIiByeD0iMTUiIHN0cm9rZT0iI0ZGOEEwMCIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxMDAiIHJ4PSIzMCIgcnk9IjUwIiBmaWxsPSIjRkZBOjAwIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIyNSIgcnk9IjQwIiBmaWxsPSIjRkY5NTAwIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIyMDAiIHJ4PSIyMCIgcnk9IjMwIiBmaWxsPSIjRkY4QTAwIi8+Cjwvc3ZnPg==',
+      is_available: true
+    },
+    {
+      id: 'static-drink-2',
+      name: 'Iced Caramel Latte',
+      description: 'Rich espresso with cold milk, caramel syrup, and whipped cream over ice',
+      price: 5.99,
+      category_name: 'Beverages',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGRkYwIi8+CjxyZWN0IHg9IjE1MCIgeT0iNDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMjIwIiBmaWxsPSIjRkZGIiByeD0iMTUiIHN0cm9rZT0iIzhCNjM0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxyZWN0IHg9IjE1MCIgeT0iMjAwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOEY0NjI2Ii8+CjxyZWN0IHg9IjE1MCIgeT0iMjIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjRkZGIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSI4MCIgcng9IjI1IiByeT0iNDAiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjEzMCIgcng9IjIwIiByeT0iMzAiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjE3MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkY4RDMiLz4KPC9zdmc+',
+      is_available: true
+    },
+    {
+      id: 'static-drink-3',
+      name: 'Strawberry Smoothie',
+      description: 'Fresh strawberries blended with yogurt, honey, and ice for a refreshing drink',
+      price: 6.99,
+      category_name: 'Beverages',
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGRkYwIi8+CjxyZWN0IHg9IjE1MCIgeT0iNDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMjIwIiBmaWxsPSIjRkZGIiByeD0iMTUiIHN0cm9rZT0iI0ZGMzMzMyIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxyZWN0IHg9IjE1MCIgeT0iMjAwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjRkY2MzQ3Ii8+CjxyZWN0IHg9IjE1MCIgeT0iMjIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjRkZGIi8+CjxlbGxpcHNlIGN4PSIxODAiIGN5PSI4MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRjMzMzMiLz4KPGVsbGlwc2UgY3g9IjIyMCIgY3k9IjEwMCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRjMzMzMiLz4KPGVsbGlwc2UgY3g9IjE2MCIgY3k9IjE0MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRjMzMzMiLz4KPGVsbGlwc2UgY3g9IjI0MCIgY3k9IjE2MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRjMzMzMiLz4KPC9zdmc+',
+      is_available: true
+    }
+  ];
+
   // Group menu items by category
   const groupedItems = useMemo(() => {
     const grouped = {};
+    
+    // Add static items first
+    staticMenuItems.forEach(item => {
+      if (!grouped[item.category_name]) {
+        grouped[item.category_name] = [];
+      }
+      grouped[item.category_name].push(item);
+    });
+    
+    // Add API items if available
     categories.forEach(category => {
       if (category === 'All') {
-        // For 'All' category, we don't create a separate group
-        // Instead, we'll show all categories with their items
         return;
       } else {
-        // Filter items based on search and whether 'All' is selected
         const filteredItems = menuItems.filter(item => {
           const matchesSearch = (item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                                (item.description || '').toLowerCase().includes(searchTerm.toLowerCase());
           
           if (selectedCategory === 0) {
-            // 'All' is selected - show all items in their respective categories
             return item.category_name === category && matchesSearch;
           } else {
-            // Specific category is selected - only show items from that category
             return item.category_name === category && 
                    category === categories[selectedCategory] && 
                    matchesSearch;
           }
         });
         
-        grouped[category] = filteredItems;
+        if (filteredItems.length > 0) {
+          if (!grouped[category]) {
+            grouped[category] = [];
+          }
+          grouped[category] = [...grouped[category], ...filteredItems];
+        }
       }
     });
+    
     return grouped;
   }, [menuItems, categories, searchTerm, selectedCategory]);
 

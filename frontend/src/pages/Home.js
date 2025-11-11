@@ -34,6 +34,59 @@ axios.defaults.withCredentials = true;
 const Home = () => {
   const theme = useTheme();
   const { addToCart } = useCart();
+  
+  // Static popular dishes for presentation
+  const staticPopularDishes = [
+    {
+      id: 'popular-1',
+      name: 'Margherita Pizza',
+      description: 'Traditional Italian pizza with fresh mozzarella, tomato sauce, and basil leaves on a crispy thin crust',
+      price: 12.99,
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iMTIwIiBmaWxsPSIjRkY2MzQ3Ii8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEwMCIgcj0iMTUiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMTAwIiByPSIxNSIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyMDAiIGN5PSIyMDAiIHI9IjE1IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjIwMCIgcj0iMTUiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjUwIiBjeT0iMjAwIiByPSIxNSIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      is_available: true
+    },
+    {
+      id: 'popular-2',
+      name: 'Chicken Alfredo Pasta',
+      description: 'Fettuccine pasta tossed in rich parmesan cream sauce with grilled chicken breast and fresh parsley',
+      price: 14.99,
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxMDAiIHJ5PSI2MCIgZmlsbD0iI0ZGRDhEMyIgc3Ryb2tlPSIjRkY2MzQ3IiBzdHJva2Utd2lkdGg9IjMiLz4KPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEyMCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjEyMCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjE4MCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjE4MCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjE4MCIgcng9IjIwIiByeT0iMTUiIGZpbGw9IiNGRkY4RDMiLz4KPC9zdmc+',
+      is_available: true
+    },
+    {
+      id: 'popular-3',
+      name: 'Fresh Caesar Salad',
+      description: 'Crisp romaine lettuce with parmesan cheese, croutons, and our signature Caesar dressing',
+      price: 8.99,
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGRkYwIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSIxNDAiIHJ5PSIxMDAiIGZpbGw9IiM5MEVFOTAiLz4KPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEyMCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkYiLz4KPGVsbGlwc2UgY3g9IjI1MCIgY3k9IjEyMCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkYiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkYiLz4KPGVsbGlwc2UgY3g9IjE3MCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkYiLz4KPGVsbGlwc2UgY3g9IjIzMCIgY3k9IjE4MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
+      is_available: true
+    },
+    {
+      id: 'popular-4',
+      name: 'Chocolate Lava Cake',
+      description: 'Warm chocolate cake with a molten center, served with vanilla ice cream',
+      price: 7.99,
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iODAiIGZpbGw9IiM4QjQ1MTMiLz4KPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTUwIiByPSI2MCIgZmlsbD0iIzNFMjcyMyIvPgo8Y2lyY2xlIGN4PSIxNjAiIGN5PSIxMTAiIHI9IjgiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMjQwIiBjeT0iMTEwIiByPSI4IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE5MCIgcj0iOCIgZmlsbD0iI0ZGRiIvPgo8L3N2Zz4=',
+      is_available: true
+    },
+    {
+      id: 'popular-5',
+      name: 'BBQ Bacon Burger',
+      description: 'Beef patty with crispy bacon, BBQ sauce, cheddar cheese, onion rings, and pickles',
+      price: 13.99,
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZEQjlGIi8+CjxyZWN0IHg9IjgwIiB5PSI3MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIzMCIgZmlsbD0iI0Q0QTU2QiIgcng9IjE1Ii8+CjxyZWN0IHg9IjgwIiB5PSIxMDAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMjAiIGZpbGw9IiNGRjYzNDciIHJ4PSIxMCIvPgo8cmVjdCB4PSI4MCIgeT0iMTIwIiB3aWR0aD0iMjQwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOTBFRTkwIiByeD0iMTAiLz4KPHJlY3QgeD0iODAiIHk9IjE0MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZGNjM0NyIgcng9IjEwIi8+CjxyZWN0IHg9IjgwIiB5PSIxNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMzAiIGZpbGw9IiNENEE1NkIiIHJ4PSIxNSIvPgo8Y2lyY2xlIGN4PSIxMjAiIGN5PSIxMTAiIHI9IjYiIGZpbGw9IiNGRkYiLz4KPGNpcmNsZSBjeD0iMTYwIiBjeT0iMTEwIiByPSI2IiBmaWxsPSIjRkZGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjExMCIgcj0iNiIgZmlsbD0iI0ZGRiIvPgo8Y2lyY2xlIGN4PSIyNDAiIGN5PSIxMTAiIHI9IjYiIGZpbGw9IiNGRkYiLz4KPC9zdmc+',
+      is_available: true
+    },
+    {
+      id: 'popular-6',
+      name: 'Iced Caramel Latte',
+      description: 'Rich espresso with cold milk, caramel syrup, and whipped cream over ice',
+      price: 5.99,
+      image_url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGRkYwIi8+CjxyZWN0IHg9IjE1MCIgeT0iNDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMjIwIiBmaWxsPSIjRkZGIiByeD0iMTUiIHN0cm9rZT0iIzhCNjM0NyIgc3Ryb2tlLXdpZHRoPSIzIi8+CjxyZWN0IHg9IjE1MCIgeT0iMjAwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOEY0NjI2Ii8+CjxyZWN0IHg9IjE1MCIgeT0iMjIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjRkZGIi8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSI4MCIgcng9IjI1IiByeT0iNDAiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjEzMCIgcng9IjIwIiByeT0iMzAiIGZpbGw9IiNGRkY4RDMiLz4KPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjE3MCIgcng9IjE1IiByeT0iMjAiIGZpbGw9IiNGRkY4RDMiLz4KPC9zdmc+',
+      is_available: true
+    }
+  ];
+
   const [popularDishes, setPopularDishes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -122,11 +175,10 @@ const Home = () => {
       try {
         setLoading(true);
         const response = await axios.get('/menu/featured');
-        setPopularDishes(response.data.items || []);
+        setPopularDishes(response.data.items || staticPopularDishes);
       } catch (err) {
         console.error('Error fetching featured items:', err);
-        // Fallback to empty array if API fails
-        setPopularDishes([]);
+        // Use staticPopularDishes defined above as fallback
       } finally {
         setLoading(false);
       }
